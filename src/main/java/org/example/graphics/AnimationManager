@@ -1,0 +1,428 @@
+package org.example.graphics;
+
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Gerenciador central de animações e sprite sheets
+ * Responsável por carregar, armazenar e fornecer animações para todas as entidades do jogo
+ */
+public class AnimationManager {
+    private static AnimationManager instance;
+    
+    // Armazenamento de sprite sheets e animações
+    private Map<String, SpriteSheet> spriteSheets;
+    private Map<String, Animation> animationTemplates;
+    private Map<String, Map<String, Animation>> entityAnimations;
+    
+    // Configurações globais
+    private boolean globalAnimationsEnabled = true;
+    private float globalAnimationSpeed = 1.0f;
+    
+    /**
+     * Construtor privado para padrão Singleton
+     */
+    private AnimationManager() {
+        spriteSheets = new ConcurrentHashMap<>();
+        animationTemplates = new ConcurrentHashMap<>();
+        entityAnimations = new ConcurrentHashMap<>();
+        
+        System.out.println("AnimationManager inicializado");
+    }
+    
+    /**
+     * Obtém a instância única do AnimationManager
+     */
+    public static AnimationManager getInstance() {
+        if (instance == null) {
+            synchronized (AnimationManager.class) {
+                if (instance == null) {
+                    instance = new AnimationManager();
+                }
+            }
+        }
+        return instance;
+    }
+    
+    /**
+     * Carrega todas as sprite sheets necessárias para o jogo
+     */
+    public void loadAllSpriteSheets() {
+        System.out.println("Carregando sprite sheets...");
+        
+        try {
+            // Sprite sheets do player
+            loadSpriteSheet("player_main", "/sprites/player/player_sheet.png", 32, 48);
+            loadSpriteSheet("player_effects", "/sprites/player/player_effects.png", 64, 64);
+            
+            // Sprite sheets dos inimigos
+            loadSpriteSheet("enemy_basic", "/sprites/enemies/basic_enemy.png", 30, 40);
+            loadSpriteSheet("enemy_flying", "/sprites/enemies/flying_enemy.png", 40, 30);
+            loadSpriteSheet("enemy_boss", "/sprites/enemies/boss_enemy.png", 80, 100);
+            
+            // Sprite sheets dos objetos
+            loadSpriteSheet("energy_orbs", "/sprites/objects/energy_orbs.png", 16, 16);
+            loadSpriteSheet("collectibles", "/sprites/objects/collectibles.png", 24, 24);
+            
+            // Sprite sheets das plataformas
+            loadSpriteSheet("platforms_basic", "/sprites/platforms/basic_platforms.png", 32, 32);
+            loadSpriteSheet("platforms_special", "/sprites/platforms/special_platforms.png", 32, 32);
+            
+            // Sprite sheets de efeitos
+            loadSpriteSheet("particle_effects", "/sprites/effects/particles.png", 16, 16);
+            loadSpriteSheet("explosion_effects", "/sprites/effects/explosions.png", 32, 32);
+            loadSpriteSheet("dash_effects", "/sprites/effects/dash_trails.png", 48, 48);
+            
+            System.out.println("Todas as sprite sheets foram carregadas!");
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar sprite sheets: " + e.getMessage());
+            e.printStackTrace();
+            createFallbackSpriteSheets();
+        }
+        
+        // Após carregar sprite sheets, criar animações
+        createAllAnimations();
+    }
+    
+    /**
+     * Carrega uma sprite sheet individual
+     */
+    public boolean loadSpriteSheet(String name, String filePath, int spriteWidth, int spriteHeight) {
+        try {
+            SpriteSheet spriteSheet = new SpriteSheet(filePath, spriteWidth, spriteHeight);
+            spriteSheets.put(name, spriteSheet);
+            
+            System.out.println("Sprite sheet carregada: " + name + " (" + filePath + ")");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar sprite sheet " + name + ": " + e.getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Cria sprite sheets de fallback quando os arquivos não são encontrados
+     */
+    private void createFallbackSpriteSheets() {
+        System.out.println("Criando sprite sheets de fallback...");
+        
+        // Criar sprite sheets placeholder para cada tipo
+        String[] sheetNames = {
+            "player_main", "player_effects", "enemy_basic", "enemy_flying", "enemy_boss",
+            "energy_orbs", "collectibles", "platforms_basic", "platforms_special",
+            "particle_effects", "explosion_effects", "dash_effects"
+        };
+        
+        for (String name : sheetNames) {
+            if (!spriteSheets.containsKey(name)) {
+                // Determinar dimensões baseadas no nome
+                int width = 32, height = 32;
+                if (name.contains("player")) {
+                    width = 32; height = 48;
+                } else if (name.contains("enemy_basic")) {
+                    width = 30; height = 40;
+                } else if (name.contains("enemy_flying")) {
+                    width = 40; height = 30;
+                } else if (name.contains("orbs")) {
+                    width = 16; height = 16;
+                }
+                
+                SpriteSheet fallback = new SpriteSheet("/fallback/" + name + ".png", width, height);
+                spriteSheets.put(name, fallback);
+            }
+        }
+    }
+    
+    /**
+     * Cria todas as animações do jogo
+     */
+    private void createAllAnimations() {
+        System.out.println("Criando animações...");
+        
+        createPlayerAnimations();
+        createEnemyAnimations();
+        createObjectAnimations();
+        createEffectAnimations();
+        
+        System.out.println("Animações criadas: " + animationTemplates.size() + " templates");
+    }
+    
+    /**
+     * Cria animações do player
+     */
+    private void createPlayerAnimations() {
+        SpriteSheet playerSheet = spriteSheets.get("player_main");
+        SpriteSheet effectsSheet = spriteSheets.get("player_effects");
+        
+        if (playerSheet != null) {
+            // Animação idle (linha 0, 4 frames)
+            createAnimation("player_idle", playerSheet.getAnimationFrames(0, 0, 4), 15, true);
+            
+            // Animação de corrida (linha 1, 6 frames)
+            createAnimation("player_run", playerSheet.getAnimationFrames(0, 1, 6), 8, true);
+            
+            // Animação de pulo (linha 2, 3 frames)
+            createAnimation("player_jump", playerSheet.getAnimationFrames(0, 2, 3), 12, false);
+            
+            // Animação de queda (linha 3, 2 frames)
+            createAnimation("player_fall", playerSheet.getAnimationFrames(0, 3, 2), 10, true);
+            
+            // Animação de dash (linha 4, 5 frames)
+            createAnimation("player_dash", playerSheet.getAnimationFrames(0, 4, 5), 6, false);
+            
+            // Animação de dano (linha 5, 3 frames)
+            createAnimation("player_hurt", playerSheet.getAnimationFrames(0, 5, 3), 8, false);
+        }
+        
+        if (effectsSheet != null) {
+            // Efeitos do dash
+            createAnimation("player_dash_effect", effectsSheet.getAnimationFrames(0, 0, 6), 4, false);
+            
+            // Efeitos de pouso
+            createAnimation("player_land_effect", effectsSheet.getAnimationFrames(0, 1, 4), 6, false);
+        }
+    }
+    
+    /**
+     * Cria animações dos inimigos
+     */
+    private void createEnemyAnimations() {
+        // Inimigo básico
+        SpriteSheet enemyBasicSheet = spriteSheets.get("enemy_basic");
+        if (enemyBasicSheet != null) {
+            createAnimation("enemy_basic_idle", enemyBasicSheet.getAnimationFrames(0, 0, 4), 12, true);
+            createAnimation("enemy_basic_walk", enemyBasicSheet.getAnimationFrames(0, 1, 6), 10, true);
+            createAnimation("enemy_basic_attack", enemyBasicSheet.getAnimationFrames(0, 2, 4), 8, false);
+            createAnimation("enemy_basic_hurt", enemyBasicSheet.getAnimationFrames(0, 3, 3), 6, false);
+        }
+        
+        // Inimigo voador
+        SpriteSheet enemyFlyingSheet = spriteSheets.get("enemy_flying");
+        if (enemyFlyingSheet != null) {
+            createAnimation("enemy_flying_idle", enemyFlyingSheet.getAnimationFrames(0, 0, 4), 8, true);
+            createAnimation("enemy_flying_fly", enemyFlyingSheet.getAnimationFrames(0, 1, 6), 6, true);
+            createAnimation("enemy_flying_attack", enemyFlyingSheet.getAnimationFrames(0, 2, 5), 7, false);
+            createAnimation("enemy_flying_hurt", enemyFlyingSheet.getAnimationFrames(0, 3, 3), 5, false);
+        }
+        
+        // Boss
+        SpriteSheet enemyBossSheet = spriteSheets.get("enemy_boss");
+        if (enemyBossSheet != null) {
+            createAnimation("boss_idle", enemyBossSheet.getAnimationFrames(0, 0, 6), 15, true);
+            createAnimation("boss_walk", enemyBossSheet.getAnimationFrames(0, 1, 8), 12, true);
+            createAnimation("boss_attack1", enemyBossSheet.getAnimationFrames(0, 2, 8), 6, false);
+            createAnimation("boss_attack2", enemyBossSheet.getAnimationFrames(0, 3, 10), 5, false);
+            createAnimation("boss_hurt", enemyBossSheet.getAnimationFrames(0, 4, 4), 8, false);
+        }
+    }
+    
+    /**
+     * Cria animações dos objetos
+     */
+    private void createObjectAnimations() {
+        // Energy Orbs
+        SpriteSheet energyOrbsSheet = spriteSheets.get("energy_orbs");
+        if (energyOrbsSheet != null) {
+            createAnimation("energy_orb_pulse", energyOrbsSheet.getAnimationFrames(0, 0, 8), 8, true);
+            createAnimation("energy_orb_collect", energyOrbsSheet.getAnimationFrames(0, 1, 6), 4, false);
+        }
+        
+        // Collectibles
+        SpriteSheet collectiblesSheet = spriteSheets.get("collectibles");
+        if (collectiblesSheet != null) {
+            createAnimation("coin_spin", collectiblesSheet.getAnimationFrames(0, 0, 6), 10, true);
+            createAnimation("gem_sparkle", collectiblesSheet.getAnimationFrames(0, 1, 8), 12, true);
+            createAnimation("powerup_glow", collectiblesSheet.getAnimationFrames(0, 2, 4), 15, true);
+        }
+        
+        // Plataformas animadas
+        SpriteSheet platformsSpecialSheet = spriteSheets.get("platforms_special");
+        if (platformsSpecialSheet != null) {
+            createAnimation("platform_moving_glow", platformsSpecialSheet.getAnimationFrames(0, 0, 4), 20, true);
+            createAnimation("platform_cloud_float", platformsSpecialSheet.getAnimationFrames(0, 1, 6), 25, true);
+            createAnimation("platform_brick_crack", platformsSpecialSheet.getAnimationFrames(0, 2, 5), 8, false);
+        }
+    }
+    
+    /**
+     * Cria animações de efeitos
+     */
+    private void createEffectAnimations() {
+        // Efeitos de partículas
+        SpriteSheet particlesSheet = spriteSheets.get("particle_effects");
+        if (particlesSheet != null) {
+            createAnimation("dust_puff", particlesSheet.getAnimationFrames(0, 0, 6), 6, false);
+            createAnimation("sparkle", particlesSheet.getAnimationFrames(0, 1, 8), 8, false);
+            createAnimation("magic_trail", particlesSheet.getAnimationFrames(0, 2, 10), 5, true);
+        }
+        
+        // Explosões
+        SpriteSheet explosionsSheet = spriteSheets.get("explosion_effects");
+        if (explosionsSheet != null) {
+            createAnimation("small_explosion", explosionsSheet.getAnimationFrames(0, 0, 8), 4, false);
+            createAnimation("medium_explosion", explosionsSheet.getAnimationFrames(0, 1, 10), 3, false);
+            createAnimation("large_explosion", explosionsSheet.getAnimationFrames(0, 2, 12), 2, false);
+        }
+        
+        // Efeitos de dash
+        SpriteSheet dashEffectsSheet = spriteSheets.get("dash_effects");
+        if (dashEffectsSheet != null) {
+            createAnimation("dash_trail", dashEffectsSheet.getAnimationFrames(0, 0, 8), 3, false);
+            createAnimation("dash_impact", dashEffectsSheet.getAnimationFrames(0, 1, 6), 4, false);
+        }
+    }
+    
+    /**
+     * Cria uma animação individual
+     */
+    private void createAnimation(String name, BufferedImage[] frames, int frameDuration, boolean loop) {
+        if (frames != null && frames.length > 0) {
+            Animation animation = new Animation(frames, frameDuration, loop);
+            animationTemplates.put(name, animation);
+        } else {
+            System.err.println("Erro: Não foi possível criar animação '" + name + "' - frames inválidos");
+        }
+    }
+    
+    /**
+     * Obtém uma nova instância de animação baseada no template
+     */
+    public Animation getAnimation(String animationName) {
+        Animation template = animationTemplates.get(animationName);
+        if (template != null) {
+            return template.clone();
+        } else {
+            System.err.println("Animação não encontrada: " + animationName);
+            return createFallbackAnimation();
+        }
+    }
+    
+    /**
+     * Obtém animações específicas para uma entidade
+     */
+    public Animation getEntityAnimation(String entityId, String animationName) {
+        Map<String, Animation> entityAnims = entityAnimations.get(entityId);
+        if (entityAnims == null) {
+            entityAnims = new HashMap<>();
+            entityAnimations.put(entityId, entityAnims);
+        }
+        
+        Animation animation = entityAnims.get(animationName);
+        if (animation == null) {
+            animation = getAnimation(animationName);
+            if (animation != null) {
+                entityAnims.put(animationName, animation);
+            }
+        }
+        
+        return animation;
+    }
+    
+    /**
+     * Cria uma animação de fallback quando não encontra a solicitada
+     */
+    private Animation createFallbackAnimation() {
+        // Criar um sprite simples colorido como fallback
+        BufferedImage fallbackFrame = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+        java.awt.Graphics2D g = fallbackFrame.createGraphics();
+        g.setColor(java.awt.Color.MAGENTA);
+        g.fillRect(0, 0, 32, 32);
+        g.setColor(java.awt.Color.BLACK);
+        g.drawRect(0, 0, 31, 31);
+        g.dispose();
+        
+        return new Animation(new BufferedImage[]{fallbackFrame}, 15, true);
+    }
+    
+    /**
+     * Atualiza todas as animações ativas
+     */
+    public void updateAnimations(long deltaTime) {
+        if (!globalAnimationsEnabled) return;
+        
+        // Atualizar animações de todas as entidades
+        for (Map<String, Animation> entityAnims : entityAnimations.values()) {
+            for (Animation animation : entityAnims.values()) {
+                if (animation.isPlaying()) {
+                    animation.update(deltaTime, globalAnimationSpeed);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Para todas as animações de uma entidade
+     */
+    public void stopEntityAnimations(String entityId) {
+        Map<String, Animation> entityAnims = entityAnimations.get(entityId);
+        if (entityAnims != null) {
+            for (Animation animation : entityAnims.values()) {
+                animation.stop();
+            }
+        }
+    }
+    
+    /**
+     * Remove animações de uma entidade (útil para limpeza)
+     */
+    public void removeEntityAnimations(String entityId) {
+        entityAnimations.remove(entityId);
+    }
+    
+    // === Métodos de controle global ===
+    
+    public void setGlobalAnimationsEnabled(boolean enabled) {
+        this.globalAnimationsEnabled = enabled;
+    }
+    
+    public boolean areAnimationsEnabled() {
+        return globalAnimationsEnabled;
+    }
+    
+    public void setGlobalAnimationSpeed(float speed) {
+        this.globalAnimationSpeed = Math.max(0.1f, speed);
+    }
+    
+    public float getGlobalAnimationSpeed() {
+        return globalAnimationSpeed;
+    }
+    
+    /**
+     * Obtém informações de debug sobre animações carregadas
+     */
+    public String getDebugInfo() {
+        StringBuilder info = new StringBuilder();
+        info.append("=== ANIMATION MANAGER DEBUG ===\n");
+        info.append("Sprite Sheets carregadas: ").append(spriteSheets.size()).append("\n");
+        info.append("Templates de animação: ").append(animationTemplates.size()).append("\n");
+        info.append("Entidades com animações: ").append(entityAnimations.size()).append("\n");
+        info.append("Animações globais ativas: ").append(globalAnimationsEnabled).append("\n");
+        info.append("Velocidade global: ").append(globalAnimationSpeed).append("x\n");
+        
+        info.append("\n--- Sprite Sheets ---\n");
+        for (String name : spriteSheets.keySet()) {
+            info.append("- ").append(name).append("\n");
+        }
+        
+        info.append("\n--- Templates de Animação ---\n");
+        for (String name : animationTemplates.keySet()) {
+            Animation anim = animationTemplates.get(name);
+            info.append("- ").append(name).append(" (").append(anim.getTotalFrames()).append(" frames)\n");
+        }
+        
+        return info.toString();
+    }
+    
+    /**
+     * Limpa todos os recursos (útil para reinicializações)
+     */
+    public void cleanup() {
+        spriteSheets.clear();
+        animationTemplates.clear();
+        entityAnimations.clear();
+        System.out.println("AnimationManager limpo");
+    }
+}
