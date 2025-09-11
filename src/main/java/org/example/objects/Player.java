@@ -58,6 +58,11 @@ public class Player extends PlayerEntity {
     boolean isTakingDamage = false;
     int damageEffectTimer = 0;
     
+    // Sistema de invencibilidade
+    boolean isInvulnerable = false;
+    int invulnerabilityTimer = 0;
+    final int INVULNERABILITY_DURATION = 60; // 1 segundo a 60 FPS
+    
     // Sistema de sprites e animações
     private AnimationManager animationManager;
     private SpriteRenderer spriteRenderer;
@@ -105,6 +110,14 @@ public class Player extends PlayerEntity {
             damageEffectTimer--;
             if (damageEffectTimer <= 0) {
                 isTakingDamage = false;
+            }
+        }
+        
+        // Atualizar invencibilidade
+        if (isInvulnerable && invulnerabilityTimer > 0) {
+            invulnerabilityTimer--;
+            if (invulnerabilityTimer <= 0) {
+                isInvulnerable = false;
             }
         }
 
@@ -729,8 +742,14 @@ public class Player extends PlayerEntity {
 
     // Métodos para sistema de vidas
     public void loseLife() {
-        if (lives > 0) {
+        // Só pode perder vida se não estiver invulnerável
+        if (lives > 0 && !isInvulnerable) {
             lives--;
+            
+            // Ativar invencibilidade por 1 segundo
+            isInvulnerable = true;
+            invulnerabilityTimer = INVULNERABILITY_DURATION;
+            
             // Ativar efeito visual de dano
             isTakingDamage = true;
             damageEffectTimer = 60; // 1 segundo a 60 FPS
@@ -747,6 +766,10 @@ public class Player extends PlayerEntity {
 
     public boolean isAlive() {
         return lives > 0;
+    }
+    
+    public boolean isInvulnerable() {
+        return isInvulnerable;
     }
 
     public void resetLives() {

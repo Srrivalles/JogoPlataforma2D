@@ -54,7 +54,7 @@ public class PlayerEntity extends Entity {
     private Color bodyColor = new Color(70, 70, 80);
     
     public PlayerEntity(float startX, float startY) {
-        super("player", "Cyber Runner");
+        super("sprites/player", "Cyber Runner");
         setPosition(startX, startY);
         setSize(32, 48);
         
@@ -70,7 +70,7 @@ public class PlayerEntity extends Entity {
         
         // Componente de colisão
         collision = new CollisionComponent(this);
-        collision.setCollisionLayer("player");
+        collision.setCollisionLayer("sprites/player");
         addComponent(collision);
         
         // Componente de saúde/vidas
@@ -291,12 +291,13 @@ public class PlayerEntity extends Entity {
     
     private void handleEnemyCollision(Entity enemy) {
         // Verificar se player está vindo de cima (pular em cima do inimigo)
-        if (movement.getVelocityY() > 0 && y + height - 10 < enemy.y) {
+        if (movement.getVelocityY() > 0 && y + height - 15 < enemy.y) {
             // Eliminar inimigo
             movement.applyImpulse(0, -jumpStrength);
             // Adicionar pontos (será gerenciado pelo ScoreSystem)
-        } else {
-            // Player tocou inimigo lateralmente - perder vida
+        } else if (movement.getVelocityY() <= 0) {
+            // Player tocou inimigo lateralmente ou por baixo - perder vida
+            // O HealthComponent já verifica invencibilidade internamente
             health.loseLife();
             
             // Efeito de knockback
@@ -306,6 +307,7 @@ public class PlayerEntity extends Entity {
                 movement.applyImpulse(8, -6);
             }
         }
+        // Se velocityY > 0 mas não está acima do inimigo, não faz nada (evita dano desnecessário)
     }
     
     private void handleOrbCollision(Entity orb) {

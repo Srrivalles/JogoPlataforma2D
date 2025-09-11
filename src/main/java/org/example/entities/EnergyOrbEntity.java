@@ -60,7 +60,7 @@ public class EnergyOrbEntity extends Entity {
     private void setupCallbacks() {
         // Callback de colisão
         collision.setOnCollisionEnter((thisEntity, other, otherCollision) -> {
-            if (otherCollision.getCollisionLayer().equals("player")) {
+            if (otherCollision.getCollisionLayer().equals("sprites/player")) {
                 collectOrb();
             }
         });

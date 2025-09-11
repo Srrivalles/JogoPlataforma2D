@@ -392,9 +392,14 @@ public class GamePanel extends JPanel {
                     scoreSystem.defeatEnemy(enemy);
                     killEnemy(enemy);
                 } else if (player.getHitbox().intersects(enemy.getHitbox()) && player.velocityY >= 0) {
-                    // Player foi atingido lateralmente
-                    triggerGameOver();
-                    return;
+                    // Player foi atingido lateralmente - só aplica dano se não estiver invulnerável
+                    if (!player.isInvulnerable()) {
+                        player.loseLife();
+                        if (player.lives <= 0) {
+                            triggerGameOver();
+                            return;
+                        }
+                    }
                 }
             }
         }

@@ -101,6 +101,9 @@ public class HealthComponent implements Component {
         
         currentHealth = Math.max(0, currentHealth - damage);
         
+        // Ativar invencibilidade por 1 segundo após tomar dano
+        setInvulnerable(1.0f);
+        
         // Ativar efeito visual de dano
         isTakingDamage = true;
         damageEffectTimer = damageEffectDuration;
@@ -147,9 +150,12 @@ public class HealthComponent implements Component {
      * @return true se uma vida foi removida
      */
     public boolean loseLife() {
-        if (lives <= 0) return false;
+        if (lives <= 0 || isInvulnerable) return false;
         
         lives--;
+        
+        // Ativar invencibilidade por 1 segundo após perder vida
+        setInvulnerable(1.0f);
         
         // Resetar saúde para máxima ao perder vida
         currentHealth = maxHealth;

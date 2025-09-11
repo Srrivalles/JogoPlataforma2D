@@ -153,16 +153,14 @@ public class PhysicsEngine {
     public static boolean checkPlayerEnemyCollision(Player player, Enemy enemy) {
         if (player.getHitbox().intersects(enemy.getHitbox())) {
             // Player pula em cima do inimigo (elimina o inimigo)
-            if (player.velocityY > 0 && player.y + player.height - 10 < enemy.y) {
+            // Verificar se player está caindo (velocityY > 0) e se está acima do inimigo
+            if (player.velocityY > 0 && player.y + player.height - 15 < enemy.y) {
                 player.velocityY = -12; // Bounce do player
                 return true; // Inimigo derrotado
-            } else {
-                // Player tocou o inimigo lateralmente ou por baixo - perde vida
-                player.loseLife();
-                return false; // Player perdeu vida
             }
+            // Se não é um pulo em cima, não faz nada aqui - deixa o GamePanel lidar com dano lateral
         }
-        return false; // Sem colisão
+        return false; // Sem colisão ou não é pulo em cima
     }
 
     public static boolean checkPlayerOrbCollision(Player player, EnergyOrb orb) {

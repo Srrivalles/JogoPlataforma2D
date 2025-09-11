@@ -257,68 +257,425 @@ public class WorldBuilder {
     }
 
     // === FASE INFINITA ===
+    // === FASE INFINITA - ABISMO DA AURORA ===
     private static ArrayList<Platform> createEndlessPlatforms() {
+        return createAuroraAbyssPlatforms();
+    }
+    
+    /**
+     * Cria a fase "Abismo da Aurora" - ambiente de caverna com cristais
+     */
+    private static ArrayList<Platform> createAuroraAbyssPlatforms() {
         ArrayList<Platform> platforms = new ArrayList<>();
 
-        // Padrão procedural básico para modo infinito
-        int currentX = 0;
-        int currentY = 400;
-
-        for (int i = 0; i < 50; i++) { // Criar muitas plataformas
-            platforms.add(new Platform(currentX, currentY, 100 + (int)(Math.random() * 100), 20, Platform.PlatformType.BRICK));
-
-            // Próxima plataforma
-            currentX += 150 + (int)(Math.random() * 200);
-            currentY = 200 + (int)(Math.random() * 250);
-        }
-
+        // === ZONA SEGURA (INÍCIO) ===
+        // Clareira iluminada por cristal gigante
+        platforms.add(new Platform(0, 450, 200, 50, Platform.PlatformType.GROUND)); // Base sólida
+        platforms.add(new Platform(50, 400, 100, 20, Platform.PlatformType.BRICK)); // Plataforma de checkpoint
+        
+        // === PRIMEIRA ÁREA - DESAFIO DE SALTOS BÁSICOS ===
+        // Plataformas de pedra em diferentes alturas
+        platforms.add(new Platform(250, 420, 80, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(380, 380, 60, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(500, 340, 80, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(650, 300, 70, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(800, 360, 90, 20, Platform.PlatformType.BRICK));
+        
+        // === SEGUNDA ÁREA - MOBILIDADE AVANÇADA ===
+        // Paredes para wall-jump (plataformas estreitas verticais)
+        platforms.add(new Platform(950, 200, 20, 200, Platform.PlatformType.PIPE)); // Parede esquerda
+        platforms.add(new Platform(1100, 150, 20, 250, Platform.PlatformType.PIPE)); // Parede direita
+        
+        // Plataformas móveis que deslizam
+        platforms.add(new Platform(1000, 350, 80, 20, Platform.PlatformType.MOVING, 1200, 350, 1.0f));
+        platforms.add(new Platform(1050, 280, 60, 20, Platform.PlatformType.MOVING, 1250, 280, 0.8f));
+        
+        // Blocos que desaparecem (plataformas quebráveis)
+        platforms.add(new Platform(1300, 320, 60, 20, Platform.PlatformType.BREAKABLE));
+        platforms.add(new Platform(1400, 280, 60, 20, Platform.PlatformType.BREAKABLE));
+        platforms.add(new Platform(1500, 240, 60, 20, Platform.PlatformType.BREAKABLE));
+        
+        // === TERCEIRA ÁREA - EXPLORAÇÃO OPCIONAL ===
+        // Caminho alternativo mais difícil
+        platforms.add(new Platform(1600, 200, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(1700, 160, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(1800, 120, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(1900, 100, 40, 20, Platform.PlatformType.BRICK)); // Fragmento de cristal aqui
+        
+        // Caminho principal
+        platforms.add(new Platform(1600, 350, 100, 20, Platform.PlatformType.GROUND));
+        platforms.add(new Platform(1750, 320, 80, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(1900, 300, 100, 20, Platform.PlatformType.BRICK));
+        
+        // === ÁREA DE DESCIDA - CONTROLE DE QUEDA ===
+        // Corredor vertical com plataformas pequenas
+        platforms.add(new Platform(2100, 100, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2200, 150, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2100, 200, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2200, 250, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2100, 300, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2200, 350, 30, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2100, 400, 30, 20, Platform.PlatformType.BRICK));
+        
+        // === ÁREA FINAL - GRANDE DESAFIO ===
+        // Plataformas estreitas sobre espinhos
+        platforms.add(new Platform(2400, 200, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2500, 180, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2600, 200, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2700, 180, 40, 20, Platform.PlatformType.BRICK));
+        platforms.add(new Platform(2800, 200, 40, 20, Platform.PlatformType.BRICK));
+        
+        // Plataforma final com saída iluminada
+        platforms.add(new Platform(2900, 150, 200, 50, Platform.PlatformType.GROUND));
+        platforms.add(new Platform(3000, 100, 100, 100, Platform.PlatformType.GROUND)); // Saída
+        
+        // === PLATAFORMAS ESPECIAIS TEMÁTICAS ===
+        // Cristais que servem como plataformas
+        platforms.add(new Platform(1200, 400, 60, 20, Platform.PlatformType.ICE)); // Cristal de gelo
+        platforms.add(new Platform(1350, 380, 60, 20, Platform.PlatformType.BOUNCY)); // Cristal elástico
+        
+        // Raízes grossas
+        platforms.add(new Platform(1800, 400, 120, 30, Platform.PlatformType.GROUND));
+        platforms.add(new Platform(2000, 450, 100, 30, Platform.PlatformType.GROUND));
+        
         return platforms;
     }
 
+    // Variáveis para controle de posição
+    private static int nextX, nextY;
+
+    private static void calculateNextPlatformPosition(int currentX, int currentY, int width, int index) {
+        // Distância horizontal reduzida para melhor jogabilidade
+        int minDistance = 60; // Distância mínima
+        int maxDistance = 120; // Distância máxima
+        
+        nextX = currentX + width + minDistance + (int)(Math.random() * (maxDistance - minDistance));
+        
+        // Variação vertical mais controlada
+        int verticalVariation = 40 + (int)(Math.random() * 60); // 40-100 pixels
+        if (Math.random() < 0.5) {
+            nextY = Math.max(150, currentY - verticalVariation); // Para cima
+        } else {
+            nextY = Math.min(500, currentY + verticalVariation); // Para baixo
+        }
+        
+        // Criar padrões interessantes a cada grupo de plataformas
+        if (index % 8 == 0) {
+            createPatternGroup(nextX, nextY);
+        }
+    }
+
+    private static Platform.PlatformType choosePlatformType(int count, int index) {
+        // Distribuição balanceada de tipos de plataforma
+        if (count < 5) {
+            return Platform.PlatformType.BRICK; // Começo sempre normal
+        }
+        
+        double random = Math.random();
+        
+        // A cada 10 plataformas, garantir uma especial
+        if (index % 10 == 0) {
+            Platform.PlatformType[] specialTypes = {
+                Platform.PlatformType.MOVING,
+                Platform.PlatformType.BOUNCY,
+                Platform.PlatformType.ICE
+            };
+            return specialTypes[(int)(Math.random() * specialTypes.length)];
+        }
+        
+        // Distribuição normal
+        if (random < 0.6) return Platform.PlatformType.BRICK;
+        else if (random < 0.7) return Platform.PlatformType.GROUND;
+        else if (random < 0.8) return Platform.PlatformType.PIPE;
+        else if (random < 0.85) return Platform.PlatformType.MOVING;
+        else if (random < 0.9) return Platform.PlatformType.ICE;
+        else if (random < 0.95) return Platform.PlatformType.BOUNCY;
+        else if (random < 0.98) return Platform.PlatformType.BREAKABLE;
+        else return Platform.PlatformType.ONE_WAY;
+    }
+
+    private static Platform createStyledPlatform(int x, int y, int width, int height, 
+                                               Platform.PlatformType type, int index) {
+        Platform platform;
+        
+        switch (type) {
+            case MOVING:
+                // Plataforma móvel com movimento interessante
+                int moveRange = 80 + (int)(Math.random() * 60);
+                float moveSpeed = 0.8f + (float)(Math.random() * 1.2f);
+                platform = new Platform(x, y, width, height, type, x + moveRange, y, moveSpeed);
+                break;
+                
+            case BOUNCY:
+                // Plataforma elástica com bounce customizado
+                float bounceForce = 1.5f + (float)(Math.random() * 1.0f);
+                platform = new Platform(x, y, width, height, type, bounceForce);
+                break;
+                
+            case BREAKABLE:
+                // Plataforma quebrável com tempo variado
+                platform = new Platform(x, y, width, height, type);
+                break;
+                
+            default:
+                platform = new Platform(x, y, width, height, type);
+                break;
+        }
+        
+        return platform;
+    }
+
+    private static void createPatternGroup(int startX, int startY) {
+        // Criar grupos de plataformas em padrões interessantes
+        // Este método pode ser expandido com padrões específicos
+    }
+
+    private static void addDecorativePlatforms(ArrayList<Platform> platforms, int nearX, int nearY) {
+        // Plataformas pequenas decorativas
+        if (Math.random() < 0.5) {
+            int decorX = nearX - 30 - (int)(Math.random() * 20);
+            int decorY = nearY - 30 - (int)(Math.random() * 20);
+            platforms.add(new Platform(decorX, decorY, 25, 8, Platform.PlatformType.GROUND));
+        }
+    }
+
+    private static void addStrategicSpecialPlatforms(ArrayList<Platform> platforms) {
+        // Adicionar plataformas especiais em posições estratégicas
+        int baseX = 200;
+        
+        for (int i = 0; i < 5; i++) { // Reduzido para 5 para evitar muitos teleporters
+            int x = baseX + (i * 500) + (int)(Math.random() * 100);
+            int y = 200 + (int)(Math.random() * 200);
+            
+            if (i % 2 == 0) {
+                // Plataformas especiais ocasionais
+                platforms.add(new Platform(x, y, 80, 20, Platform.PlatformType.BOUNCY));
+            }
+        }
+    }
+
+    // === INIMIGOS PARA ABISMO DA AURORA ===
     private static ArrayList<Enemy> createEndlessEnemies(float difficulty) {
+        return createAuroraAbyssEnemies(difficulty);
+    }
+    
+    /**
+     * Cria inimigos para a fase Abismo da Aurora
+     */
+    private static ArrayList<Enemy> createAuroraAbyssEnemies(float difficulty) {
         ArrayList<Enemy> enemies = new ArrayList<>();
 
-        // Inimigos distribuídos randomicamente
-        for (int i = 0; i < 20; i++) {
-            int x = 200 + (i * 400) + (int)(Math.random() * 200);
-            int y = 200 + (int)(Math.random() * 200);
-            int patrolLeft = x - 100;
-            int patrolRight = x + 100;
+        // Poucos inimigos terrestres - foco nos voadores
+        // Inimigo na primeira área
+        enemies.add(new Enemy(300, 400, 250, 350));
+        
+        // Inimigo na área de descida
+        enemies.add(new Enemy(2150, 380, 2100, 2200));
+        
+        // Inimigo na área final
+        enemies.add(new Enemy(2450, 180, 2400, 2500));
 
-            enemies.add(new Enemy(x, y, patrolLeft, patrolRight));
+        return enemies;
+    }
+    
+    /**
+     * Cria inimigos voadores para a fase Abismo da Aurora
+     */
+    public static ArrayList<org.example.objects.FlyingEnemy> createAuroraAbyssFlyingEnemies() {
+        ArrayList<org.example.objects.FlyingEnemy> flyingEnemies = new ArrayList<>();
+
+        // Inimigos voadores na segunda área (mobilidade avançada)
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(1000, 250, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.HORIZONTAL_PATROL, 1.0f));
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(1150, 200, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.VERTICAL_PATROL, 0.8f));
+
+        // Inimigos voadores na área de exploração opcional
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(1650, 150, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.CIRCULAR, 1.2f));
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(1850, 80, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.HOVER, 0.6f));
+
+        // Inimigos voadores na área final (grande desafio)
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(2450, 150, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.DIVE_BOMB, 1.5f));
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(2650, 150, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.FIGURE_EIGHT, 1.0f));
+        flyingEnemies.add(new org.example.objects.FlyingEnemy(2750, 150, 16, 16, 
+            org.example.objects.FlyingEnemy.MovementPattern.HORIZONTAL_PATROL, 1.2f));
+
+        return flyingEnemies;
+    }
+    
+    /**
+     * Cria espinhos para a fase Abismo da Aurora
+     */
+    public static ArrayList<org.example.world.Spike> createAuroraAbyssSpikes() {
+        ArrayList<org.example.world.Spike> spikes = new ArrayList<>();
+
+        // === PRIMEIRA ÁREA - ESPINHOS NO CHÃO ===
+        // Buracos entre plataformas com espinhos
+        spikes.add(new org.example.world.Spike(330, 470, 50, 30, org.example.world.Spike.SpikeType.FLOOR));
+        spikes.add(new org.example.world.Spike(450, 470, 50, 30, org.example.world.Spike.SpikeType.FLOOR));
+        spikes.add(new org.example.world.Spike(580, 470, 70, 30, org.example.world.Spike.SpikeType.FLOOR));
+        spikes.add(new org.example.world.Spike(720, 470, 80, 30, org.example.world.Spike.SpikeType.FLOOR));
+
+        // === SEGUNDA ÁREA - ESPINHOS NO TETO E PAREDES ===
+        // Espinhos no teto da área de wall-jump
+        spikes.add(new org.example.world.Spike(950, 180, 20, 20, org.example.world.Spike.SpikeType.CEILING));
+        spikes.add(new org.example.world.Spike(1100, 130, 20, 20, org.example.world.Spike.SpikeType.CEILING));
+        
+        // Espinhos nas paredes laterais
+        spikes.add(new org.example.world.Spike(930, 250, 20, 100, org.example.world.Spike.SpikeType.WALL_RIGHT));
+        spikes.add(new org.example.world.Spike(1120, 200, 20, 100, org.example.world.Spike.SpikeType.WALL_LEFT));
+
+        // === TERCEIRA ÁREA - ESPINHOS NO CAMINHO OPCIONAL ===
+        // Espinhos no teto do caminho difícil
+        spikes.add(new org.example.world.Spike(1600, 80, 40, 20, org.example.world.Spike.SpikeType.CEILING));
+        spikes.add(new org.example.world.Spike(1700, 40, 40, 20, org.example.world.Spike.SpikeType.CEILING));
+        spikes.add(new org.example.world.Spike(1800, 0, 40, 20, org.example.world.Spike.SpikeType.CEILING));
+        spikes.add(new org.example.world.Spike(1900, 0, 40, 20, org.example.world.Spike.SpikeType.CEILING));
+
+        // === ÁREA DE DESCIDA - ESPINHOS LATERAIS ===
+        // Espinhos nas paredes do corredor vertical
+        spikes.add(new org.example.world.Spike(2070, 100, 30, 350, org.example.world.Spike.SpikeType.WALL_RIGHT));
+        spikes.add(new org.example.world.Spike(2230, 100, 30, 350, org.example.world.Spike.SpikeType.WALL_LEFT));
+
+        // === ÁREA FINAL - ESPINHOS NO CHÃO ===
+        // Lago de espinhos sob as plataformas estreitas
+        spikes.add(new org.example.world.Spike(2400, 470, 500, 30, org.example.world.Spike.SpikeType.FLOOR));
+
+        return spikes;
+    }
+    
+    /**
+     * Cria fragmentos de cristal para a fase Abismo da Aurora
+     */
+    public static ArrayList<org.example.objects.CrystalFragment> createAuroraAbyssCrystalFragments() {
+        ArrayList<org.example.objects.CrystalFragment> fragments = new ArrayList<>();
+
+        // === FRAGMENTOS BÁSICOS (AZUIS) ===
+        // Primeira área - fácil acesso
+        fragments.add(new org.example.objects.CrystalFragment(280, 400, 
+            org.example.objects.CrystalFragment.FragmentType.BLUE_CRYSTAL));
+        fragments.add(new org.example.objects.CrystalFragment(420, 360, 
+            org.example.objects.CrystalFragment.FragmentType.BLUE_CRYSTAL));
+        fragments.add(new org.example.objects.CrystalFragment(540, 320, 
+            org.example.objects.CrystalFragment.FragmentType.BLUE_CRYSTAL));
+
+        // === FRAGMENTOS MÉDIOS (ROXOS) ===
+        // Segunda área - requer timing
+        fragments.add(new org.example.objects.CrystalFragment(1020, 330, 
+            org.example.objects.CrystalFragment.FragmentType.PURPLE_CRYSTAL));
+        fragments.add(new org.example.objects.CrystalFragment(1320, 300, 
+            org.example.objects.CrystalFragment.FragmentType.PURPLE_CRYSTAL));
+
+        // === FRAGMENTOS ALTOS (DOURADOS) ===
+        // Área de exploração opcional - caminho difícil
+        fragments.add(new org.example.objects.CrystalFragment(1920, 80, 
+            org.example.objects.CrystalFragment.FragmentType.GOLDEN_CRYSTAL));
+        
+        // Área de descida - posições estratégicas
+        fragments.add(new org.example.objects.CrystalFragment(2120, 80, 
+            org.example.objects.CrystalFragment.FragmentType.GOLDEN_CRYSTAL));
+        fragments.add(new org.example.objects.CrystalFragment(2220, 130, 
+            org.example.objects.CrystalFragment.FragmentType.GOLDEN_CRYSTAL));
+
+        // === FRAGMENTOS MÁXIMOS (AURORA) ===
+        // Área final - recompensa máxima
+        fragments.add(new org.example.objects.CrystalFragment(2520, 160, 
+            org.example.objects.CrystalFragment.FragmentType.AURORA_CRYSTAL));
+        fragments.add(new org.example.objects.CrystalFragment(2720, 160, 
+            org.example.objects.CrystalFragment.FragmentType.AURORA_CRYSTAL));
+        
+        // Fragmento final na saída
+        fragments.add(new org.example.objects.CrystalFragment(3050, 80, 
+            org.example.objects.CrystalFragment.FragmentType.AURORA_CRYSTAL));
+
+        return fragments;
+    }
+
+    // === INIMIGOS COM MELHOR DISTRIBUIÇÃO (MÉTODO ORIGINAL) ===
+    private static ArrayList<Enemy> createEndlessEnemiesOriginal(float difficulty) {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+
+        // Densidade maior de inimigos com patrulhamento inteligente
+        for (int i = 0; i < 35; i++) { // Mais inimigos
+            int x = 150 + (i * 250) + (int)(Math.random() * 100); // Distância menor
+            int y = 200 + (int)(Math.random() * 200);
+            
+            // Patrulhamento baseado na dificuldade
+            int patrolRange = (int)(80 * difficulty) + 50;
+            int patrolLeft = x - patrolRange;
+            int patrolRight = x + patrolRange;
+            
+            Enemy enemy = new Enemy(x, y, patrolLeft, patrolRight);
+            
+            // Adicionar variação baseada na dificuldade (se a classe Enemy suportar no futuro)
+            // if (difficulty > 1.5f && Math.random() < 0.3) {
+            //     enemy.setEnemyType("FAST");
+            // } else if (difficulty > 2.0f && Math.random() < 0.2) {
+            //     enemy.setEnemyType("STRONG");
+            // }
+            
+            enemies.add(enemy);
         }
 
         return enemies;
     }
 
+    // === ORBS COM DISTRIBUIÇÃO MELHORADA ===
     private static ArrayList<EnergyOrb> createEndlessOrbs() {
         ArrayList<EnergyOrb> orbs = new ArrayList<>();
 
-        // Mix aleatório de orbs
-        for (int i = 0; i < 30; i++) {
-            int x = 100 + (i * 300) + (int)(Math.random() * 100);
-            int y = 100 + (int)(Math.random() * 300);
+        // Mais orbs com distribuição inteligente
+        for (int i = 0; i < 50; i++) { // Mais orbs para coleta
+            int x = 80 + (i * 200) + (int)(Math.random() * 80); // Distância menor
+            int y = 80 + (int)(Math.random() * 350);
 
-            // Chance de orbs raros aumenta no modo infinito
-            int orbType = (int)(Math.random() * 100);
-            int energyValue;
-
-            if (orbType < 30) {
-                energyValue = EnergyOrb.SMALL_ORB;
-            } else if (orbType < 50) {
-                energyValue = EnergyOrb.MEDIUM_ORB;
-            } else if (orbType < 70) {
-                energyValue = EnergyOrb.LARGE_ORB;
-            } else if (orbType < 90) {
-                energyValue = EnergyOrb.RARE_ORB;
-            } else {
-                energyValue = EnergyOrb.LEGENDARY_ORB;
-            }
-
-            orbs.add(new EnergyOrb(x, y, energyValue));
+            // Sistema de raridade melhorado
+            int energyValue = calculateOrbValue(i);
+            
+            EnergyOrb orb = new EnergyOrb(x, y, energyValue);
+            
+            // Adicionar efeito visual baseado no valor (se a classe suportar no futuro)
+            // if (energyValue >= EnergyOrb.RARE_ORB) {
+            //     orb.setVisualEffect("GLOW");
+            // }
+            // if (energyValue == EnergyOrb.LEGENDARY_ORB) {
+            //     orb.setVisualEffect("SPARKLE");
+            // }
+            
+            orbs.add(orb);
         }
+        
+        // Adicionar orbs especiais em locais secretos
+        addSecretOrbs(orbs);
 
         return orbs;
+    }
+
+    private static int calculateOrbValue(int index) {
+        // Sistema de progressão de raridade
+        double rarity = Math.random() * 100;
+        
+        // Orbs mais raros aparecem mais tarde
+        double rareBonus = Math.min(index * 0.5, 30); // Bonus até 30%
+        
+        if (rarity < (40 - rareBonus)) return EnergyOrb.SMALL_ORB;
+        else if (rarity < (65 - rareBonus)) return EnergyOrb.MEDIUM_ORB;
+        else if (rarity < (80 - rareBonus)) return EnergyOrb.LARGE_ORB;
+        else if (rarity < (92 + rareBonus/2)) return EnergyOrb.RARE_ORB;
+        else return EnergyOrb.LEGENDARY_ORB;
+    }
+
+    private static void addSecretOrbs(ArrayList<EnergyOrb> orbs) {
+        // Orbs escondidos em locais difíceis de alcançar
+        for (int i = 0; i < 5; i++) {
+            int x = 500 + (i * 600);
+            int y = 50 + (int)(Math.random() * 100); // Posições altas
+            orbs.add(new EnergyOrb(x, y, EnergyOrb.LEGENDARY_ORB));
+        }
     }
 
     // Métodos de compatibilidade com o código existente
@@ -332,6 +689,126 @@ public class WorldBuilder {
 
     public static ArrayList<EnergyOrb> createEnergyOrbs() {
         return createEnergyOrbsForLevel(1, 1.0f);
+    }
+
+    // === MÉTODOS PARA EFEITOS VISUAIS MELHORADOS ===
+
+    /**
+     * Atualiza efeitos visuais das plataformas
+     */
+    public static void updatePlatformVisuals(ArrayList<Platform> platforms, long deltaTime) {
+        for (Platform platform : platforms) {
+            // Atualizar animações específicas de cada tipo
+            updatePlatformAnimation(platform, deltaTime);
+        }
+    }
+
+    private static void updatePlatformAnimation(Platform platform, long deltaTime) {
+        Platform.PlatformType type = platform.getType();
+        
+        switch (type) {
+            case ICE:
+                // Efeito de brilho no gelo
+                // platform.setAnimationFrame((int)((System.currentTimeMillis() / 200) % 4));
+                break;
+                
+            case BOUNCY:
+                // Animação de elasticidade
+                // if (platform.isBeingUsed()) {
+                //     platform.setBounceAnimation(true);
+                // }
+                break;
+                
+            case BREAKABLE:
+                // Animação de rachadura se danificada
+                // if (platform.getDamage() > 0) {
+                //     platform.setCrackLevel(platform.getDamage());
+                // }
+                break;
+                
+            default:
+                // Outros tipos não precisam de animação especial
+                break;
+        }
+    }
+
+    /**
+     * Desenha efeitos visuais melhorados para plataformas
+     */
+    public static void drawEnhancedPlatforms(java.awt.Graphics2D g2d, ArrayList<Platform> platforms) {
+        for (Platform platform : platforms) {
+            drawPlatformWithEffects(g2d, platform);
+        }
+    }
+
+    private static void drawPlatformWithEffects(java.awt.Graphics2D g2d, Platform platform) {
+        Platform.PlatformType type = platform.getType();
+        
+        // Desenhar a plataforma base
+        platform.draw(g2d);
+        
+        // Adicionar efeitos específicos
+        switch (type) {
+            case MOVING:
+                drawMovingPlatformTrail(g2d, platform);
+                break;
+                
+            case ICE:
+                drawIceGlowEffect(g2d, platform);
+                break;
+                
+            case BOUNCY:
+                drawBouncyIndicator(g2d, platform);
+                break;
+                
+            case BREAKABLE:
+                drawCrackPattern(g2d, platform);
+                break;
+                
+            default:
+                // Outros tipos usam apenas a renderização base
+                break;
+        }
+    }
+
+    // Métodos auxiliares para efeitos visuais específicos
+    private static void drawMovingPlatformTrail(java.awt.Graphics2D g2d, Platform platform) {
+        // Desenhar rastro da plataforma móvel
+        java.awt.Color trailColor = new java.awt.Color(255, 215, 0, 80); // Dourado transparente
+        g2d.setColor(trailColor);
+        g2d.fillRect(platform.x - 5, platform.y - 2, platform.width + 10, platform.height + 4);
+    }
+
+    private static void drawIceGlowEffect(java.awt.Graphics2D g2d, Platform platform) {
+        // Desenhar brilho azulado no gelo
+        java.awt.Color iceGlow = new java.awt.Color(173, 216, 230, 60); // Azul gelo transparente
+        g2d.setColor(iceGlow);
+        g2d.fillRect(platform.x - 3, platform.y - 3, platform.width + 6, platform.height + 6);
+    }
+
+    private static void drawBouncyIndicator(java.awt.Graphics2D g2d, Platform platform) {
+        // Desenhar indicador visual para plataforma elástica
+        java.awt.Color bounceColor = new java.awt.Color(255, 20, 147, 100); // Rosa vibrante
+        g2d.setColor(bounceColor);
+        // Desenhar pequenos arcos indicando bounce
+        for (int i = 0; i < 3; i++) {
+            int x = platform.x + (platform.width / 4) * (i + 1);
+            int y = platform.y - 8 - (i * 2);
+            g2d.fillOval(x - 2, y, 4, 4);
+        }
+    }
+
+    private static void drawCrackPattern(java.awt.Graphics2D g2d, Platform platform) {
+        // Desenhar padrão de rachaduras
+        java.awt.Color crackColor = new java.awt.Color(80, 40, 20); // Marrom escuro
+        g2d.setColor(crackColor);
+        g2d.setStroke(new java.awt.BasicStroke(1));
+        
+        // Rachaduras simples
+        int centerX = platform.x + platform.width / 2;
+        int centerY = platform.y + platform.height / 2;
+        g2d.drawLine(centerX - 10, centerY, centerX + 10, centerY);
+        g2d.drawLine(centerX, centerY - 5, centerX, centerY + 5);
     }
 
     // === NOVOS MÉTODOS PARA PLATAFORMAS ESPECIAIS ===

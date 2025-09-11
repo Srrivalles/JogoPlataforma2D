@@ -76,7 +76,7 @@ public class GameConfig {
     
     // Caminhos para sprite sheets
     public static final String SPRITES_PATH = "sprites/";
-    public static final String PLAYER_SPRITES_PATH = SPRITES_PATH + "player/";
+    public static final String PLAYER_SPRITES_PATH = SPRITES_PATH + "sprites/player/";
     public static final String ENEMY_SPRITES_PATH = SPRITES_PATH + "enemies/";
     public static final String OBJECT_SPRITES_PATH = SPRITES_PATH + "objects/";
     public static final String WORLD_SPRITES_PATH = SPRITES_PATH + "world/";

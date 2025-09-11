@@ -174,7 +174,7 @@ public class EnemyEntity extends Entity {
     
     private void handleCollision(Entity other, CollisionComponent otherCollision) {
         // Lógica de colisão específica do enemy
-        if (otherCollision.getCollisionLayer().equals("player")) {
+        if (otherCollision.getCollisionLayer().equals("sprites/player")) {
             handlePlayerCollision(other);
         } else if (otherCollision.getCollisionLayer().equals("platform")) {
             // Enemy não deve cair das plataformas

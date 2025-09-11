@@ -100,8 +100,8 @@ public class LevelSystem {
     private LevelData createEndlessLevel() {
         LevelData level = new LevelData();
         level.levelNumber = 999;
-        level.themeName = "Infinite Cyberspace";
-        level.backgroundColor = new java.awt.Color(40, 40, 40);
+        level.themeName = "Purple Infinity - Cyber Nexus";
+        level.backgroundColor = new java.awt.Color(25, 0, 51); // Roxo muito escuro futurista
         level.goalX = 9999; // Sem fim real
         level.goalY = 200;
         level.playerStartX = 100;

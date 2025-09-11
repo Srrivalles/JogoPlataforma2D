@@ -41,6 +41,7 @@ public class Platform {
     private boolean isBroken = false;
     private int breakTimer = 0;
     private final int BREAK_DELAY = 30; // Frames antes de quebrar
+    private boolean isSteppedOn = false; // Se o player pisou na plataforma
     
     // Ice Platform
     private float iceFriction = 0.1f; // Reduz atrito
@@ -293,7 +294,6 @@ public class Platform {
 
     // Criar efeito visual de quebra
     private void createBreakEffect() {
-        // TODO: Implementar partículas de quebra
         System.out.println("Plataforma quebrou em: " + x + ", " + y);
     }
 
@@ -365,6 +365,13 @@ public class Platform {
      * Retorna cor baseada no tipo da plataforma
      */
     private Color getPlatformColor() {
+        // Verificar se estamos na fase infinita (baseado na coordenada X)
+        boolean isInfinitePhase = x > 3000; // Após as 3 fases iniciais
+        
+        if (isInfinitePhase) {
+            return getInfinitePhasePurpleColor();
+        }
+        
         switch (type) {
             case GROUND: return new Color(101, 67, 33);      // Marrom terra
             case BRICK: return new Color(139, 69, 19);       // Marrom tijolo
@@ -378,11 +385,36 @@ public class Platform {
             default: return Color.DARK_GRAY;
         }
     }
+    
+    /**
+     * Cores temáticas roxo futurista para a fase infinita
+     */
+    private Color getInfinitePhasePurpleColor() {
+        switch (type) {
+            case GROUND: return new Color(75, 0, 130);       // Índigo profundo
+            case BRICK: return new Color(106, 90, 205);      // Slate azul roxo
+            case PIPE: return new Color(138, 43, 226);       // Azul violeta
+            case CLOUD: return new Color(186, 85, 211);      // Orquídea média
+            case MOVING: return new Color(148, 0, 211);      // Violeta escuro (pulsa)
+            case BREAKABLE: return new Color(147, 112, 219); // Púrpura médio
+            case ICE: return new Color(221, 160, 221);       // Ameixa clara
+            case BOUNCY: return new Color(255, 0, 255);      // Magenta vibrante
+            case ONE_WAY: return new Color(153, 50, 204);    // Roxo escuro
+            default: return new Color(72, 61, 139);          // Cinza ardósia escuro
+        }
+    }
 
     /**
      * Retorna cor da borda baseada no tipo
      */
     private Color getBorderColor() {
+        // Verificar se estamos na fase infinita
+        boolean isInfinitePhase = x > 3000;
+        
+        if (isInfinitePhase) {
+            return getInfinitePhasePurpleBorder();
+        }
+        
         switch (type) {
             case GROUND: return new Color(80, 50, 20);       // Marrom escuro
             case BRICK: return new Color(101, 67, 33);       // Marrom médio
@@ -394,6 +426,24 @@ public class Platform {
             case BOUNCY: return new Color(255, 105, 180);    // Rosa quente
             case ONE_WAY: return new Color(34, 139, 34);     // Verde floresta
             default: return Color.BLACK;
+        }
+    }
+    
+    /**
+     * Bordas temáticas roxo futurista para a fase infinita
+     */
+    private Color getInfinitePhasePurpleBorder() {
+        switch (type) {
+            case GROUND: return new Color(25, 0, 51);        // Índigo muito escuro
+            case BRICK: return new Color(75, 0, 130);        // Índigo
+            case PIPE: return new Color(102, 0, 153);        // Roxo escuro
+            case CLOUD: return new Color(128, 0, 128);       // Púrpura
+            case MOVING: return new Color(255, 20, 147);     // Rosa shocking (brilhante)
+            case BREAKABLE: return new Color(106, 90, 205);  // Slate azul
+            case ICE: return new Color(186, 85, 211);        // Orquídea
+            case BOUNCY: return new Color(255, 105, 180);    // Rosa quente
+            case ONE_WAY: return new Color(72, 61, 139);     // Cinza ardósia escuro
+            default: return new Color(25, 25, 112);          // Azul meia-noite
         }
     }
 
@@ -429,6 +479,14 @@ public class Platform {
      * Adiciona efeitos visuais específicos do tipo de plataforma
      */
     private void drawPlatformEffects(Graphics2D g2d) {
+        // Verificar se estamos na fase infinita
+        boolean isInfinitePhase = x > 3000;
+        
+        if (isInfinitePhase) {
+            drawInfinitePhasePurpleEffects(g2d);
+            return;
+        }
+        
         switch (type) {
             case MOVING:
                 // Adicionar brilho nas bordas
@@ -508,6 +566,99 @@ public class Platform {
     }
 
     /**
+     * Efeitos visuais especiais para a fase infinita roxo futurista
+     */
+    private void drawInfinitePhasePurpleEffects(Graphics2D g2d) {
+        // Efeito de pulsação baseado no tempo
+        long time = System.currentTimeMillis();
+        float pulse = (float)(Math.sin(time * 0.01) * 0.5 + 0.5); // Oscila entre 0 e 1
+        
+        switch (type) {
+            case MOVING:
+                // Brilho roxo pulsante nas bordas
+                int pulseAlpha = (int)(150 * pulse + 50);
+                g2d.setColor(new Color(255, 0, 255, pulseAlpha));
+                g2d.setStroke(new BasicStroke(3));
+                g2d.drawRect(x-2, y-2, width+4, height+4);
+                
+                // Partículas de energia
+                g2d.setColor(new Color(186, 85, 211, 100));
+                for (int i = 0; i < 3; i++) {
+                    int px = x + (int)(Math.random() * width);
+                    int py = y - 5 - (int)(Math.random() * 10);
+                    g2d.fillOval(px, py, 2, 2);
+                }
+                break;
+
+            case CLOUD:
+                // Aura roxa suave
+                g2d.setColor(new Color(186, 85, 211, 30));
+                g2d.fillOval(x - 10, y - 5, width + 20, height + 10);
+                
+                // Brilho nas bordas
+                g2d.setColor(new Color(221, 160, 221, 80));
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRect(x, y, width, height);
+                break;
+
+            case BOUNCY:
+                // Anel de energia magenta pulsante
+                int ringAlpha = (int)(200 * pulse + 55);
+                g2d.setColor(new Color(255, 0, 255, ringAlpha));
+                g2d.setStroke(new BasicStroke(2));
+                g2d.drawOval(x - 5, y - 5, width + 10, height + 10);
+                
+                // Núcleo brilhante
+                g2d.setColor(new Color(255, 20, 147, 120));
+                g2d.fillOval(x + width/4, y + height/4, width/2, height/2);
+                break;
+
+            case PIPE:
+                // Circuitos de energia
+                g2d.setColor(new Color(138, 43, 226, 150));
+                g2d.setStroke(new BasicStroke(1));
+                for (int i = 0; i < width; i += 20) {
+                    g2d.drawLine(x + i, y, x + i, y + height);
+                }
+                break;
+
+            case BRICK:
+                // Juntas energizadas
+                g2d.setColor(new Color(106, 90, 205, 100));
+                g2d.setStroke(new BasicStroke(1));
+                for (int i = 0; i < height; i += 16) {
+                    for (int j = (i / 16) % 2 * 16; j < width; j += 32) {
+                        g2d.drawLine(x + j, y + i, x + j + 16, y + i);
+                    }
+                }
+                break;
+
+            case GROUND:
+                // Base energizada com padrão de circuito
+                g2d.setColor(new Color(75, 0, 130, 80));
+                for (int i = 0; i < width; i += 40) {
+                    g2d.drawLine(x + i, y, x + i + 20, y + height);
+                }
+                break;
+
+            default:
+                // Brilho roxo básico para outros tipos
+                g2d.setColor(new Color(153, 50, 204, 60));
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRect(x, y, width, height);
+                break;
+        }
+        
+        // Efeito de "energia" flutuante para todas as plataformas na fase infinita
+        if (Math.random() < 0.1) { // 10% de chance por frame
+            g2d.setColor(new Color(255, 0, 255, 50));
+            int sparkX = x + (int)(Math.random() * width);
+            int sparkY = y - (int)(Math.random() * 20);
+            g2d.fillOval(sparkX, sparkY, 3, 3);
+        }
+    }
+
+    /**
      * Cleanup quando a plataforma é destruída
      */
     public void cleanup() {
@@ -573,7 +724,8 @@ public class Platform {
     public void onPlayerLanded(org.example.objects.Player player) {
         switch (type) {
             case BREAKABLE:
-                if (breakTimer == 0) {
+                if (!isSteppedOn) {
+                    isSteppedOn = true;
                     breakTimer = BREAK_DELAY;
                 }
                 break;

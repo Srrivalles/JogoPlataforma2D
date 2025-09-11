@@ -42,11 +42,11 @@ public class AnimationManager {
      */
     private void initializeDefaultSprites() {
         // Player sprites
-        registerSpriteSheet("player", "sprites/player/player_sheet.png", 32, 48);
-        registerAnimation("player_idle", "player", 0, 3, 8.0f, true);
-        registerAnimation("player_walk", "player", 4, 7, 12.0f, true);
-        registerAnimation("player_jump", "player", 8, 10, 10.0f, false);
-        registerAnimation("player_dash", "player", 11, 13, 15.0f, false);
+        registerSpriteSheet("sprites/player", "sprites/player/player_sheet.png", 32, 48);
+        registerAnimation("player_idle", "sprites/player", 0, 3, 8.0f, true);
+        registerAnimation("player_walk", "sprites/player", 4, 7, 12.0f, true);
+        registerAnimation("player_jump", "sprites/player", 8, 10, 10.0f, false);
+        registerAnimation("player_dash", "sprites/player", 11, 13, 15.0f, false);
         
         // Enemy sprites
         registerSpriteSheet("enemy", "sprites/enemies/enemy_sheet.png", 30, 40);
