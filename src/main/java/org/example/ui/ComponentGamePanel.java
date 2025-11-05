@@ -4,7 +4,11 @@ import org.example.entities.PlayerEntity;
 import org.example.entities.EnemyEntity;
 import org.example.systems.ComponentPhysicsEngine;
 import org.example.inputs.CameraController;
+<<<<<<< HEAD
+import org.example.levels.InfiniteWorldSystem;
+=======
 import org.example.levels.LevelSystem;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 import org.example.fhysics.ScoreSystem;
 import org.example.world.Platform;
 import org.example.world.WorldBuilder;
@@ -32,7 +36,11 @@ public class ComponentGamePanel extends JPanel {
     // Sistema de animações
     private AnimationManager animationManager;
     private CameraController cameraController;
+<<<<<<< HEAD
+    private InfiniteWorldSystem infiniteWorldSystem;
+=======
     private LevelSystem levelSystem;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     // Entidades usando sistema de componentes
     private PlayerEntity player;
@@ -69,16 +77,27 @@ public class ComponentGamePanel extends JPanel {
         inputHandler = new InputHandler(this);
         scoreSystem = new ScoreSystem();
         cameraController = new CameraController();
+<<<<<<< HEAD
+        infiniteWorldSystem = new InfiniteWorldSystem();
+=======
         levelSystem = new LevelSystem();
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void initializeGame() {
         // Criar player usando sistema de componentes
+<<<<<<< HEAD
+        player = new PlayerEntity(infiniteWorldSystem.getPlayerStartX(), infiniteWorldSystem.getPlayerStartY());
+
+        // Criar mundo usando WorldBuilder
+        platforms = WorldBuilder.createInitialPlatforms();
+=======
         LevelSystem.LevelData levelData = levelSystem.getCurrentLevelData();
         player = new PlayerEntity(levelData.playerStartX, levelData.playerStartY);
 
         // Criar mundo usando WorldBuilder
         platforms = WorldBuilder.createPlatformsForLevel(levelSystem.getCurrentLevel());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
         // Criar enemies usando sistema de componentes
         enemies = new ArrayList<>();
@@ -86,7 +105,10 @@ public class ComponentGamePanel extends JPanel {
         // Criar orbs usando sistema de componentes
         energyOrbs = new ArrayList<>();
 
+<<<<<<< HEAD
+=======
         System.out.println("Jogo inicializado com sistema de componentes!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void setupInput() {
@@ -184,7 +206,10 @@ public class ComponentGamePanel extends JPanel {
                     method.invoke(cameraController, new Player((int)player.getX(), (int)player.getY()));
                 } catch (Exception e3) {
                     // Fallback: não atualiza câmera mas não quebra o jogo
+<<<<<<< HEAD
+=======
                     System.out.println("Info: Câmera não foi atualizada - método não encontrado");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 }
             }
         }
@@ -250,7 +275,10 @@ public class ComponentGamePanel extends JPanel {
         if (gameOver) return;
 
         gameOver = true;
+<<<<<<< HEAD
+=======
         System.out.println("GAME OVER! Pontuação final: " + scoreSystem.getCurrentScore());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
         // Parar o game loop
         stopGameLoop();

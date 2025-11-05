@@ -87,8 +87,12 @@ public class CrystalFragment {
             
             // Criar efeito de coleta
             createCollectionEffect();
+<<<<<<< HEAD
+
+=======
             
             System.out.println("Fragmento coletado: " + fragmentType);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             return true;
         }
         

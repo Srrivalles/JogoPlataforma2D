@@ -1,5 +1,40 @@
 package org.example.ui;
 
+<<<<<<< HEAD
+import java.awt.BasicStroke;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
+import org.example.world.MapTheme;
+
+import org.example.world.IBackgroundManager;
+import org.example.fhysics.PhysicsEngine;
+import org.example.fhysics.ScoreSystem;
+import org.example.inputs.CameraController;
+import org.example.inputs.InputHandler;
+import org.example.levels.InfiniteWorldSystem;
+import org.example.main.CyberRunnerGame;
+import org.example.objects.Enemy;
+import org.example.objects.EnergyOrb;
+import org.example.objects.Player;
+import org.example.world.CyberpunkBackgroundManager;
+import org.example.world.ParticleSystem;
+import org.example.world.Platform;
+import org.example.world.ReactivePlatformSystem;
+import org.example.world.WindEffect;
+import org.example.world.WorldBuilder;
+
+
+=======
 import org.example.inputs.CameraController;
 import org.example.main.CyberRunnerGame;
 import org.example.inputs.InputHandler;
@@ -49,10 +84,21 @@ class EnemyRespawnData {
         return System.currentTimeMillis() - deathTime >= GamePanel.ENEMY_RESPAWN_DELAY;
     }
 }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
 public class GamePanel extends JPanel {
 
     // Sistemas do jogo
+<<<<<<< HEAD
+    private long lastRenderTime = 0;
+    private InputHandler inputHandler;
+    private ScoreSystem scoreSystem;
+    private CameraController cameraController;
+    private InfiniteWorldSystem infiniteWorldSystem;
+    private IBackgroundManager backgroundManager;
+    private ParticleSystem particleSystem;
+    private ArrayList<WindEffect> windEffects;
+=======
     private InputHandler inputHandler;
     private ScoreSystem scoreSystem;
     
@@ -60,6 +106,7 @@ public class GamePanel extends JPanel {
     private AnimationManager animationManager;
     private CameraController cameraController;
     private LevelSystem levelSystem; // ⭐ ADICIONADO: Declaração do campo levelSystem
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     // Integração com menu e frame principal
     private MenuSystem menuSystem;
@@ -72,6 +119,25 @@ public class GamePanel extends JPanel {
     private ArrayList<Platform> platforms;
     private ArrayList<Enemy> enemies;
     private ArrayList<EnergyOrb> energyOrbs;
+<<<<<<< HEAD
+    private ArrayList<org.example.objects.FlyingEnemy> flyingEnemies;
+
+    // Sistema de respawn de inimigos
+    private ArrayList<EnemyRespawnData> enemyRespawnQueue;
+    public static final int ENEMY_RESPAWN_DELAY = 5000;
+    public static final int MAX_ACTIVE_ENEMIES = 8;
+
+    // Constantes de morte
+    private static final int DEATH_Y_THRESHOLD = 800;
+    private static final int WORLD_BOUNDS_LEFT = -500;
+
+    // Sistema de ativação/desativação de inimigos
+    private boolean enemiesEnabled = true;
+
+    // Sistema de geração de partículas
+    private long lastParticleSpawnTime = 0;
+    private static final long PARTICLE_SPAWN_INTERVAL = 2000;
+=======
 
     // Sistema de respawn de inimigos
     private ArrayList<EnemyRespawnData> enemyRespawnQueue;
@@ -80,21 +146,33 @@ public class GamePanel extends JPanel {
     // Sistema de ativação/desativação de inimigos
     private boolean enemiesEnabled = true;
     private ArrayList<Enemy> disabledEnemies; // Inimigos temporariamente desativados
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     private boolean gameOver = false;
     private boolean gamePaused = false;
 
+<<<<<<< HEAD
+    public InfiniteWorldSystem getInfiniteWorldSystem() {
+        return infiniteWorldSystem;
+=======
     public LevelSystem getLevelSystem() {
         return levelSystem;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public GamePanel() {
         setupPanel();
+<<<<<<< HEAD
+
+        initializeSystems(MapTheme.CYBERPUNK);
+        initializeGame();
+=======
         initializeSystems();
         initializeGame();
         
         // Inicializar sistema de animações
         this.animationManager = AnimationManager.getInstance();
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         setupInput();
     }
 
@@ -105,6 +183,65 @@ public class GamePanel extends JPanel {
         this.setFocusable(true);
     }
 
+<<<<<<< HEAD
+    public GamePanel(MapTheme selectedTheme) {
+        setupPanel();
+        initializeSystems(selectedTheme);
+        initializeGame();
+        setupInput();
+    }
+
+    // Mude o método initializeSystems para usar o tema
+    private void initializeSystems(MapTheme selectedTheme) {
+        inputHandler = new InputHandler(this);
+        scoreSystem = new ScoreSystem();
+        cameraController = new CameraController();
+
+        // LÓGICA DE ESCOLHA DO TEMA!
+        switch (selectedTheme) {
+            case HALLOWEEN:
+                // Se o usuário escolheu Halloween, crie o gerenciador de Halloween
+                backgroundManager = new org.example.world.HalloweenBackgroundManager(GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+                break;
+            case CYBERPUNK:
+            default: // Cyberpunk será o padrão
+                // Se o usuário escolheu Cyberpunk, crie o gerenciador Cyberpunk
+                backgroundManager = new org.example.world.CyberpunkBackgroundManager(GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+                break;
+        }
+
+        particleSystem = new ParticleSystem();
+        windEffects = new ArrayList<>();
+        enemyRespawnQueue = new ArrayList<>();
+    }
+
+    private void initializeGame() {
+        infiniteWorldSystem = new InfiniteWorldSystem();
+        player = new Player(infiniteWorldSystem.getPlayerStartX(), infiniteWorldSystem.getPlayerStartY());
+        setupPlayerColors();
+
+        platforms = WorldBuilder.createInitialPlatforms();
+        cameraController.centerOnPlayer(player);
+
+        enemies = WorldBuilder.createInitialEnemies();
+        energyOrbs = new ArrayList<>();
+
+        flyingEnemies = WorldBuilder.getFlyingEnemies();
+        if (flyingEnemies != null && !flyingEnemies.isEmpty()) {
+            // Definir o player como alvo dos inimigos voadores
+            for (org.example.objects.FlyingEnemy flyingEnemy : flyingEnemies) {
+                if (flyingEnemy != null) {
+                    flyingEnemy.setTargetPlayer(player);
+                }
+            }
+        }
+
+        ReactivePlatformSystem.createReactivePlatforms(platforms);
+        createWindEffects();
+    }
+    private void setupPlayerColors() {
+        try {
+=======
     private void initializeSystems() {
         inputHandler = new InputHandler(this);
         scoreSystem = new ScoreSystem();
@@ -144,6 +281,7 @@ public class GamePanel extends JPanel {
     private void setupPlayerColors() {
         try {
             // CORREÇÃO: Verificar se os métodos existem antes de chamá-los
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             if (hasMethod(player, "changePrimaryColor")) {
                 player.changePrimaryColor(GameConfig.PRIMARY_COLOR);
             }
@@ -154,7 +292,10 @@ public class GamePanel extends JPanel {
                 player.changeAccentColor(GameConfig.ACCENT_COLOR);
             }
         } catch (Exception e) {
+<<<<<<< HEAD
+=======
             System.out.println("Aviso: Métodos de cor do player não encontrados: " + e.getMessage());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 
@@ -168,11 +309,66 @@ public class GamePanel extends JPanel {
     }
 
     private void setupInput() {
+<<<<<<< HEAD
+        for (java.awt.event.KeyListener listener : this.getKeyListeners()) {
+            this.removeKeyListener(listener);
+        }
+
+        this.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                int keyCode = e.getKeyCode();
+
+                if (gameOver) {
+                    if (keyCode == java.awt.event.KeyEvent.VK_R) {
+                        restartGame();
+                        return;
+                    }
+                    if (keyCode == java.awt.event.KeyEvent.VK_ESCAPE) {
+                        handleEscapePressed();
+                        return;
+                    }
+                    return;
+                }
+
+                if (gamePaused) {
+                    if (keyCode == java.awt.event.KeyEvent.VK_P ||
+                            keyCode == java.awt.event.KeyEvent.VK_ESCAPE) {
+                        gamePaused = false;
+                    }
+                    return;
+                }
+
+                if (keyCode == java.awt.event.KeyEvent.VK_P ||
+                        keyCode == java.awt.event.KeyEvent.VK_ESCAPE) {
+                    gamePaused = true;
+                    return;
+                }
+
+                if (inputHandler != null) {
+                    inputHandler.keyPressed(e);
+                }
+            }
+
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                if (inputHandler != null && !gameOver && !gamePaused) {
+                    inputHandler.keyReleased(e);
+                }
+            }
+        });
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+    }
+
+=======
         this.addKeyListener(inputHandler);
     }
 
     // === SETTERS PARA INTEGRAÇÃO ===
 
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void setMenuSystem(MenuSystem menuSystem) {
         this.menuSystem = menuSystem;
     }
@@ -181,21 +377,33 @@ public class GamePanel extends JPanel {
         this.gameFrame = gameFrame;
     }
 
+<<<<<<< HEAD
+    public CyberRunnerGame getGameFrame() {
+        return gameFrame;
+    }
+=======
     // === CONTROLE DO GAME LOOP ===
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     public void startGameLoop() {
         if (gameLoopActive) return;
 
         gameLoopActive = true;
         gamePaused = false;
+<<<<<<< HEAD
+=======
         System.out.println("Iniciando game loop...");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
         gameThread = new Thread(this::gameLoop);
         gameThread.start();
     }
 
     public void stopGameLoop() {
+<<<<<<< HEAD
+=======
         System.out.println("Parando game loop...");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         gameLoopActive = false;
         if (gameThread != null) {
             gameThread.interrupt();
@@ -204,16 +412,43 @@ public class GamePanel extends JPanel {
 
     public void pauseGame() {
         gamePaused = true;
+<<<<<<< HEAD
+=======
         System.out.println("Jogo pausado");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public void resumeGame() {
         gamePaused = false;
+<<<<<<< HEAD
+=======
         System.out.println("Jogo resumido");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void gameLoop() {
         long lastTime = System.nanoTime();
+<<<<<<< HEAD
+        final double OPTIMAL_TIME = 1000000000.0 / 60.0;
+        double delta = 0;
+
+        while (gameLoopActive && !Thread.currentThread().isInterrupted()) {
+            long now = System.nanoTime();
+            delta += (now - lastTime);
+            lastTime = now;
+
+            if (delta >= OPTIMAL_TIME) {
+                if (!gamePaused && !gameOver) {
+                    update();
+                }
+                delta -= OPTIMAL_TIME;
+            }
+
+            repaint();
+
+            try {
+                Thread.sleep(8);
+=======
         double nsPerFrame = 1000.0 / 60.0; // 60 FPS
 
         while (gameLoopActive && !Thread.currentThread().isInterrupted()) {
@@ -229,18 +464,66 @@ public class GamePanel extends JPanel {
 
             try {
                 Thread.sleep(16); // ~60 FPS
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             } catch (InterruptedException e) {
                 break;
             }
         }
     }
 
+<<<<<<< HEAD
+=======
     // === LÓGICA PRINCIPAL DO JOGO ===
 
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void update() {
         if (gameOver) return;
 
         try {
+<<<<<<< HEAD
+            if (inputHandler != null) {
+                inputHandler.update();
+            }
+
+            updateInfiniteWorld();
+
+            PhysicsEngine.applyGravityToPlayer(player);
+            player.update();
+
+            rechargePlayerEnergy();
+
+            PhysicsEngine.checkPlayerPlatformCollisions(player, platforms);
+
+            // SISTEMA MISTO DE ORBS
+            updateCianoOrbs();  // Orbs cianos (comuns)
+            updateGoldOrbs();   // Orbs amarelos (raros - 3x pontos)
+
+            updateEnemies();
+
+            updateFlyingEnemies();
+
+            spawnRandomEnemies();
+
+            spawnPlatformParticles();
+
+            infiniteWorldSystem.update((int)player.x);
+
+            if (backgroundManager != null) {
+                try {
+                    backgroundManager.update(player.x, player.y, System.currentTimeMillis());
+                } catch (Exception e) {
+                }
+            }
+
+            particleSystem.update();
+
+            updateWindEffects();
+
+            ReactivePlatformSystem.updateReactivePlatforms(player);
+
+            cameraController.updateCamera(player);
+
+=======
             // 0. Atualizar input
             if (inputHandler != null) {
                 inputHandler.update();
@@ -280,11 +563,92 @@ public class GamePanel extends JPanel {
             cameraController.updateCamera(player);
 
             // 10. Atualizar menu system com pontuação
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             if (menuSystem != null) {
                 menuSystem.updateScore(scoreSystem.getCurrentScore());
                 menuSystem.updateStats(scoreSystem.getEnergyOrbsCollected(), scoreSystem.getEnemiesDefeated());
             }
 
+<<<<<<< HEAD
+            checkGameOverConditions();
+
+        } catch (Exception e) {
+        }
+    }
+
+    private void updateFlyingEnemies() {
+        if (flyingEnemies == null) {
+            flyingEnemies = WorldBuilder.getFlyingEnemies();
+            if (flyingEnemies == null) {
+                flyingEnemies = new ArrayList<>();
+            }
+            return;
+        }
+
+        if (flyingEnemies.isEmpty()) {
+            return;
+        }
+
+        if (!enemiesEnabled) {
+            return;
+        }
+
+        for (int i = flyingEnemies.size() - 1; i >= 0; i--) {
+            org.example.objects.FlyingEnemy flyingEnemy = flyingEnemies.get(i);
+
+            if (flyingEnemy.x < -5000) {
+                // Inimigo foi derrotado, considerar respawn
+                continue;
+            }
+
+            if (player != null) {
+                flyingEnemy.setTargetPlayer(player);
+            }
+
+            if (flyingEnemy.x > -1000 && flyingEnemy.y > -1000) {
+                flyingEnemy.update(0.016f);
+
+                java.awt.Rectangle playerHitbox = player.getHitbox();
+                java.awt.Rectangle enemyHitbox = flyingEnemy.getHitbox();
+
+                if (playerHitbox.intersects(enemyHitbox)) {
+                    // Player pulou em cima do inimigo voador
+                    if (player.velocityY > 0 && player.y + player.height - 10 < flyingEnemy.y) {
+                        player.velocityY = -12;
+
+                        // ✅ SOM DE INIMIGO DERROTADO
+                        org.example.audio.AudioManager.playEnemyDownSound();
+
+                        scoreSystem.addScore(50);
+                        flyingEnemy.x = -10000;
+                        flyingEnemy.y = -10000;
+                    }
+                    // Inimigo voador machuca o player
+                    else if (!player.isInvulnerable()) {
+                        // ✅ SOM DE DANO AO PLAYER
+                        org.example.audio.AudioManager.playHurtSound();
+
+                        player.loseLife();
+                        if (player.lives <= 0) {
+                            triggerGameOver();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateInfiniteWorld() {
+        try {
+            int playerX = (int)player.x;
+
+            if (playerX % 500 == 0 && playerX > 0) {
+            }
+
+        } catch (Exception e) {
+        }
+=======
             // 11. Verificar condições de game over
             checkGameOverConditions();
 
@@ -337,21 +701,103 @@ public class GamePanel extends JPanel {
         cameraController.resetCamera();
 
         System.out.println("Nova fase carregada: Fase " + levelSystem.getCurrentLevel());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void rechargePlayerEnergy() {
         try {
+<<<<<<< HEAD
+            if (hasMethod(player, "rechargeEnergy")) {
+                player.rechargeEnergy();
+            } else {
+=======
             // CORREÇÃO: Verificar se o método existe
             if (hasMethod(player, "rechargeEnergy")) {
                 player.rechargeEnergy();
             } else {
                 // Implementação alternativa se o método não existir
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 if (player.energyLevel < GameConfig.PLAYER_MAX_ENERGY) {
                     player.energyLevel = Math.min(GameConfig.PLAYER_MAX_ENERGY,
                             player.energyLevel + GameConfig.PLAYER_ENERGY_RECHARGE_RATE);
                 }
             }
         } catch (Exception e) {
+<<<<<<< HEAD
+        }
+    }
+
+    // COLETA DE ORBS CIANOS (comuns - 10 pontos)
+    private void updateCianoOrbs() {
+        ArrayList<org.example.entities.EnergyOrbEntity> worldOrbs = WorldBuilder.getWorldOrbs();
+
+        if (worldOrbs == null || worldOrbs.isEmpty()) return;
+
+        java.awt.Rectangle playerHitbox = player.getHitbox();
+
+        for (org.example.entities.EnergyOrbEntity orb : worldOrbs) {
+            if (orb.isCollected()) continue;
+
+            float orbX = orb.getX();
+            float orbY = orb.getY();
+            int orbSize = 16;
+
+            java.awt.Rectangle orbHitbox = new java.awt.Rectangle(
+                    (int)orbX - orbSize/2,
+                    (int)orbY - orbSize/2,
+                    orbSize,
+                    orbSize
+            );
+
+            if (playerHitbox.intersects(orbHitbox)) {
+                // ✅ SOM DE COLETA DE ORB
+                org.example.audio.AudioManager.playEffectSound();
+
+                try {
+                    java.lang.reflect.Field collectedField = orb.getClass().getDeclaredField("collected");
+                    collectedField.setAccessible(true);
+                    collectedField.set(orb, true);
+                } catch (Exception e) {
+                }
+
+                scoreSystem.addScore(GameConfig.ORB_POINTS);
+
+                player.energyLevel = Math.min(GameConfig.PLAYER_MAX_ENERGY,
+                        player.energyLevel + GameConfig.ORB_ENERGY_RESTORE);
+            }
+        }
+    }
+
+    // COLETA DE ORBS DOURADOS (raros - 30 pontos)
+    private void updateGoldOrbs() {
+        ArrayList<org.example.objects.EnergyOrb> goldOrbs = WorldBuilder.getGoldOrbs();
+
+        if (goldOrbs == null || goldOrbs.isEmpty()) return;
+
+        java.awt.Rectangle playerHitbox = player.getHitbox();
+
+        for (org.example.objects.EnergyOrb orb : goldOrbs) {
+            if (orb.isCollected()) continue;
+
+            int orbSize = 20;
+
+            java.awt.Rectangle orbHitbox = new java.awt.Rectangle(
+                    orb.x - orbSize/2,
+                    orb.y - orbSize/2,
+                    orbSize,
+                    orbSize
+            );
+
+            if (playerHitbox.intersects(orbHitbox)) {
+                // ✅ O orb.onCollect() já toca o som internamente
+                orb.onCollect(player);
+
+                int goldPoints = GameConfig.ORB_POINTS * 3;
+                scoreSystem.addScore(goldPoints);
+
+                player.energyLevel = Math.min(GameConfig.PLAYER_MAX_ENERGY,
+                        player.energyLevel + GameConfig.ORB_ENERGY_RESTORE * 2);
+=======
             System.out.println("Aviso: Erro ao recarregar energia do player: " + e.getMessage());
         }
     }
@@ -365,11 +811,20 @@ public class GamePanel extends JPanel {
                     orb.onCollect(player);
                     scoreSystem.collectOrb(orb);
                 }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             }
         }
     }
 
     private void updateEnemies() {
+<<<<<<< HEAD
+        updateEnemyRespawn();
+
+        if (!enemiesEnabled) {
+            return;
+        }
+
+=======
         // Primeiro, verificar se algum inimigo deve ressuscitar
         updateEnemyRespawn();
         
@@ -378,6 +833,7 @@ public class GamePanel extends JPanel {
             return;
         }
         
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         for (Enemy enemy : enemies) {
             if (enemy != null) {
                 PhysicsEngine.applyGravityToEnemy(enemy);
@@ -385,6 +841,24 @@ public class GamePanel extends JPanel {
                 PhysicsEngine.checkEnemyPlatformCollisions(enemy, platforms);
                 PhysicsEngine.preventEnemyFallFromPlatforms(enemy, platforms);
 
+<<<<<<< HEAD
+                // Player mata o inimigo
+                if (PhysicsEngine.checkPlayerEnemyCollision(player, enemy)) {
+                    player.velocityY = -12;
+
+                    // ✅ SOM DE INIMIGO DERROTADO
+                    org.example.audio.AudioManager.playEnemyDownSound();
+
+                    scoreSystem.defeatEnemy(enemy, player, true);
+                    killEnemy(enemy);
+                }
+                // Inimigo machuca o player
+                else if (player.getHitbox().intersects(enemy.getHitbox()) && player.velocityY >= 0) {
+                    if (!player.isInvulnerable()) {
+                        // ✅ SOM DE DANO AO PLAYER
+                        org.example.audio.AudioManager.playHurtSound();
+
+=======
                 // Verificar colisão com player
                 if (PhysicsEngine.checkPlayerEnemyCollision(player, enemy)) {
                     // Player pula no inimigo e o derrota
@@ -394,6 +868,7 @@ public class GamePanel extends JPanel {
                 } else if (player.getHitbox().intersects(enemy.getHitbox()) && player.velocityY >= 0) {
                     // Player foi atingido lateralmente - só aplica dano se não estiver invulnerável
                     if (!player.isInvulnerable()) {
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                         player.loseLife();
                         if (player.lives <= 0) {
                             triggerGameOver();
@@ -406,6 +881,75 @@ public class GamePanel extends JPanel {
     }
 
     private void updateEnemyRespawn() {
+<<<<<<< HEAD
+        int activeEnemies = 0;
+        for (Enemy enemy : enemies) {
+            if (enemy.x > -500 && enemy.y > -500) {
+                activeEnemies++;
+            }
+        }
+
+        for (int i = enemyRespawnQueue.size() - 1; i >= 0; i--) {
+            EnemyRespawnData respawnData = enemyRespawnQueue.get(i);
+
+            if (respawnData.shouldRespawn() && activeEnemies < MAX_ACTIVE_ENEMIES) {
+                respawnEnemy(respawnData);
+                enemyRespawnQueue.remove(i);
+                activeEnemies++;
+            }
+        }
+    }
+
+    private void spawnRandomEnemies() {
+        return;
+    }
+
+    private void spawnPlatformParticles() {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastParticleSpawnTime >= PARTICLE_SPAWN_INTERVAL) {
+            lastParticleSpawnTime = currentTime;
+
+            int playerX = (int)player.x;
+
+            for (Platform platform : platforms) {
+                int distance = Math.abs(platform.x - playerX);
+
+                if (distance <= 600 && Math.random() < 0.6) {
+                    float platformCenterX = platform.x + platform.width / 2;
+                    float platformY = platform.y;
+
+                    switch (platform.getType()) {
+                        case MOVING:
+                            particleSystem.addEnergyParticles(platformCenterX, platformY, 3);
+                            break;
+                        case BOUNCY:
+                            particleSystem.addHologramParticles(platformCenterX, platformY, 2);
+                            break;
+                        case ICE:
+                            particleSystem.addAmbientParticles(platformCenterX, platformY, 4);
+                            break;
+                        default:
+                            particleSystem.addAmbientParticles(platformCenterX, platformY, 2);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void killEnemy(Enemy enemy) {
+        EnemyRespawnData respawnData = new EnemyRespawnData(
+                enemy,
+                enemy.x,
+                enemy.y,
+                enemy.patrolLeft,
+                enemy.patrolRight
+        );
+
+        enemyRespawnQueue.add(respawnData);
+
+=======
         // Verificar inimigos que devem ressuscitar
         for (int i = enemyRespawnQueue.size() - 1; i >= 0; i--) {
             EnemyRespawnData respawnData = enemyRespawnQueue.get(i);
@@ -432,10 +976,140 @@ public class GamePanel extends JPanel {
         enemyRespawnQueue.add(respawnData);
         
         // Mover inimigo para fora da tela (torná-lo invisível)
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         enemy.x = -1000;
         enemy.y = -1000;
         enemy.velocityX = 0;
         enemy.velocityY = 0;
+<<<<<<< HEAD
+    }
+
+    private void respawnEnemy(EnemyRespawnData respawnData) {
+        Enemy enemy = respawnData.enemy;
+
+        Platform nearestPlatform = findNearestPlatform(respawnData.originalX);
+
+        if (nearestPlatform != null) {
+            enemy.x = nearestPlatform.x + (nearestPlatform.width / 2);
+            enemy.y = nearestPlatform.y - 40;
+            enemy.patrolLeft = nearestPlatform.x;
+            enemy.patrolRight = nearestPlatform.x + nearestPlatform.width - 30;
+        } else {
+            enemy.x = respawnData.originalX;
+            enemy.y = respawnData.originalY;
+            enemy.patrolLeft = respawnData.patrolLeft;
+            enemy.patrolRight = respawnData.patrolRight;
+        }
+
+        enemy.velocityX = 0;
+        enemy.velocityY = 0;
+        enemy.direction = 1;
+    }
+
+    private Platform findNearestPlatform(double x) {
+        Platform nearest = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Platform platform : platforms) {
+            double distance = Math.abs(platform.x - x);
+            if (distance < minDistance && distance < 500) {
+                minDistance = distance;
+                nearest = platform;
+            }
+        }
+
+        return nearest;
+    }
+
+    private void checkGameOverConditions() {
+        if (player == null) return;
+
+        // Player caiu do mapa
+        if (player.y > DEATH_Y_THRESHOLD) {
+            // ✅ SOM DE QUEDA/DANO
+            org.example.audio.AudioManager.playFallSound();
+
+            player.loseLife();
+
+            if (player.lives <= 0) {
+                triggerGameOver();
+            } else {
+                respawnPlayer();
+            }
+            return;
+        }
+
+        // Player saiu dos limites do mundo
+        if (player.x < WORLD_BOUNDS_LEFT) {
+            // ✅ SOM DE DANO
+            org.example.audio.AudioManager.playHurtSound();
+
+            player.loseLife();
+
+            if (player.lives <= 0) {
+                triggerGameOver();
+            } else {
+                respawnPlayer();
+            }
+            return;
+        }
+
+        if (player.lives <= 0) {
+            triggerGameOver();
+        }
+    }
+
+    private void respawnPlayer() {
+        Platform respawnPlatform = findSafeRespawnPlatform();
+
+        if (respawnPlatform != null) {
+            player.x = respawnPlatform.x + (respawnPlatform.width / 2) - (player.width / 2);
+            player.y = respawnPlatform.y - player.height - 10;
+        } else {
+            player.x = infiniteWorldSystem.getPlayerStartX();
+            player.y = infiniteWorldSystem.getPlayerStartY();
+        }
+
+        player.velocityX = 0;
+        player.velocityY = 0;
+
+        try {
+            java.lang.reflect.Method setInvulnerableMethod = player.getClass().getMethod("setInvulnerable", boolean.class);
+            setInvulnerableMethod.invoke(player, true);
+        } catch (Exception e) {
+        }
+
+        cameraController.centerOnPlayer(player);
+
+    }
+
+    private Platform findSafeRespawnPlatform() {
+        if (platforms.isEmpty()) return null;
+
+        Platform bestPlatform = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Platform platform : platforms) {
+            if (platform.x < player.x && platform.x > player.x - 800) {
+                double distance = player.x - platform.x;
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestPlatform = platform;
+                }
+            }
+        }
+
+        if (bestPlatform == null && !platforms.isEmpty()) {
+            for (Platform platform : platforms) {
+                if (platform.x >= 0) {
+                    bestPlatform = platform;
+                    break;
+                }
+            }
+        }
+
+        return bestPlatform;
+=======
         
         System.out.println("Inimigo eliminado! Respawn em 10 segundos...");
     }
@@ -464,6 +1138,7 @@ public class GamePanel extends JPanel {
         if (!player.isAlive()) {
             triggerGameOver();
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public void onPlayerDeath() {
@@ -471,6 +1146,98 @@ public class GamePanel extends JPanel {
     }
 
     public void triggerGameOver() {
+<<<<<<< HEAD
+        if (gameOver) return;
+
+        gameOver = true;
+        gamePaused = false;
+        int finalScore = scoreSystem.getCurrentScore();
+
+        try {
+            java.lang.reflect.Method saveMethod = scoreSystem.getClass().getMethod("saveHighScore");
+            saveMethod.invoke(scoreSystem);
+        } catch (Exception e) {
+        }
+
+        this.requestFocusInWindow();
+
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            this.requestFocusInWindow();
+        });
+
+        if (gameFrame != null) {
+            gameFrame.onGameOver(
+                    finalScore,
+                    scoreSystem.getEnergyOrbsCollected(),
+                    scoreSystem.getEnemiesDefeated()
+            );
+        } else if (menuSystem != null) {
+            menuSystem.triggerGameOver(
+                    finalScore,
+                    scoreSystem.getEnergyOrbsCollected(),
+                    scoreSystem.getEnemiesDefeated()
+            );
+        }
+    }
+
+    private void restartGame() {
+
+        gameOver = false;
+        gamePaused = false;
+
+        if (gameThread != null) {
+            stopGameLoop();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
+        }
+
+        platforms.clear();
+        enemies.clear();
+        energyOrbs.clear();
+        enemyRespawnQueue.clear();
+
+        if (particleSystem != null) {
+            particleSystem.clear();
+        }
+
+        if (scoreSystem != null) {
+            try {
+                java.lang.reflect.Method resetMethod = scoreSystem.getClass().getMethod("reset");
+                resetMethod.invoke(scoreSystem);
+            } catch (Exception e) {
+                scoreSystem.resetScore();
+            }
+        }
+
+        infiniteWorldSystem = new InfiniteWorldSystem();
+        player = new Player(infiniteWorldSystem.getPlayerStartX(), infiniteWorldSystem.getPlayerStartY());
+        setupPlayerColors();
+
+        platforms = WorldBuilder.createInitialPlatforms();
+        enemies = WorldBuilder.createInitialEnemies();
+        energyOrbs = new ArrayList<>();
+
+        cameraController.centerOnPlayer(player);
+
+        try {
+            java.lang.reflect.Method setTargetMethod = cameraController.getClass().getMethod("setTarget", Player.class);
+            setTargetMethod.invoke(cameraController, player);
+        } catch (Exception e) {
+        }
+
+        ReactivePlatformSystem.createReactivePlatforms(platforms);
+        createWindEffects();
+
+        this.requestFocusInWindow();
+
+        startGameLoop();
+
+    }
+
+    public void resetGame() {
+=======
         if (gameOver) return; // Evitar múltiplas chamadas
 
         System.out.println("GAME OVER! Pontuação final: " + scoreSystem.getCurrentScore());
@@ -504,6 +1271,7 @@ public class GamePanel extends JPanel {
         System.out.println("Resetando jogo completamente...");
 
         // Parar o game loop se estiver ativo
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         if (gameLoopActive) {
             stopGameLoop();
 
@@ -516,6 +1284,34 @@ public class GamePanel extends JPanel {
             }
         }
 
+<<<<<<< HEAD
+        scoreSystem.resetScore();
+
+        enemyRespawnQueue.clear();
+
+        enemiesEnabled = true;
+
+        infiniteWorldSystem = new InfiniteWorldSystem();
+
+        player.x = infiniteWorldSystem.getPlayerStartX();
+        player.y = infiniteWorldSystem.getPlayerStartY();
+        player.velocityX = 0;
+        player.velocityY = 0;
+        player.resetLives();
+        resetPlayerProperties();
+
+        cameraController.resetCamera();
+
+        platforms = WorldBuilder.createInitialPlatforms();
+        enemies = WorldBuilder.createInitialEnemies();
+        energyOrbs = new ArrayList<>();
+
+        flyingEnemies = WorldBuilder.getFlyingEnemies();
+        for (org.example.objects.FlyingEnemy flyingEnemy : flyingEnemies) {
+            flyingEnemy.setTargetPlayer(player);
+        }
+
+=======
         // Reset do sistema de pontuação
         scoreSystem.resetScore();
         
@@ -550,29 +1346,42 @@ public class GamePanel extends JPanel {
         energyOrbs = WorldBuilder.createEnergyOrbsForLevel(1, 1.0f);
 
         // Reset inimigos
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         for (Enemy enemy : enemies) {
             resetEnemy(enemy);
         }
 
+<<<<<<< HEAD
+=======
         // Reset orbs
         resetEnergyOrbs();
 
         // Reset estado do jogo
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         gameOver = false;
         gamePaused = false;
 
         this.requestFocusInWindow();
+<<<<<<< HEAD
+=======
         System.out.println("Jogo resetado para Fase 1!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void resetPlayerProperties() {
         try {
+<<<<<<< HEAD
+=======
             // CORREÇÃO: Usar reflexão para verificar campos antes de acessar
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             setFieldSafely(player, "energyLevel", 100);
             setFieldSafely(player, "canDash", true);
             setFieldSafely(player, "dashCooldown", 0);
         } catch (Exception e) {
+<<<<<<< HEAD
+=======
             System.out.println("Aviso: Algumas propriedades do player não puderam ser resetadas: " + e.getMessage());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 
@@ -581,19 +1390,27 @@ public class GamePanel extends JPanel {
             java.lang.reflect.Field field = obj.getClass().getField(fieldName);
             field.set(obj, value);
         } catch (Exception e) {
+<<<<<<< HEAD
+=======
             System.out.println("Campo " + fieldName + " não encontrado ou não acessível");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 
     private void resetEnemy(Enemy enemy) {
         if (enemy != null) {
+<<<<<<< HEAD
+=======
             // ⭐ CORREÇÃO: Usar campos públicos do Enemy diretamente
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             enemy.x = (enemy.patrolLeft + enemy.patrolRight) / 2;
             enemy.y = 100;
             enemy.velocityY = 0;
         }
     }
 
+<<<<<<< HEAD
+=======
     private void resetEnergyOrbs() {
         for (EnergyOrb orb : energyOrbs) {
             if (orb != null) {
@@ -624,12 +1441,20 @@ public class GamePanel extends JPanel {
 
     // === RENDERIZAÇÃO ===
 
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
 
         try {
+<<<<<<< HEAD
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            if (gameOver) {
+                drawGameOverMessage(g2d);
+            } else {
+=======
             // Configurar antialiasing
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -638,19 +1463,186 @@ public class GamePanel extends JPanel {
                 drawGameOverMessage(g2d);
             } else {
                 // Renderizar o jogo normal
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 renderGame(g2d);
             }
 
         } catch (Exception e) {
+<<<<<<< HEAD
+            // ✅ CORREÇÃO: Sempre fornecer uma mensagem válida
+            String errorMsg = "Erro de renderização";
+            if (e != null && e.getMessage() != null && !e.getMessage().trim().isEmpty()) {
+                errorMsg = e.getMessage();
+            }
+
+            // Desenhar tela de erro simples diretamente (sem depender de HUDRenderer)
+            try {
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+
+                g2d.setColor(Color.RED);
+                g2d.setFont(new Font("Arial", Font.BOLD, 24));
+                g2d.drawString("ERRO DE RENDERIZAÇÃO", 50, 100);
+
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(new Font("Arial", Font.PLAIN, 14));
+                g2d.drawString(errorMsg, 50, 150);
+                g2d.drawString("Pressione ESC para voltar ao menu", 50, 200);
+
+                // Log do erro no console
+                if (e != null) {
+                    e.printStackTrace();
+                }
+            } catch (Exception ex) {
+                // Se até isso falhar, apenas pinta a tela de preto
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+            }
+=======
             System.out.println("ERRO CRÍTICO no paintComponent: " + e.getMessage());
             e.printStackTrace();
             HUDRenderer.drawErrorScreen(g2d, e.getMessage());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         } finally {
             g2d.dispose();
         }
     }
 
     private void renderGame(Graphics2D g2d) {
+<<<<<<< HEAD
+        // ✅ VERIFICAÇÃO CRÍTICA: Garantir que objetos essenciais existem
+        if (player == null || platforms == null || cameraController == null) {
+            // Desenhar tela de carregamento
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 20));
+            g2d.drawString("Inicializando...", GameConfig.SCREEN_WIDTH / 2 - 70, GameConfig.SCREEN_HEIGHT / 2);
+            return;
+        }
+
+        boolean backgroundRendered = false;
+
+        // Renderizar background
+        if (backgroundManager != null) {
+            try {
+                backgroundManager.renderDistantBackground(g2d, cameraController.getCameraX(), cameraController.getCameraY());
+                backgroundManager.renderMidBackground(g2d, cameraController.getCameraX(), cameraController.getCameraY());
+                backgroundRendered = true;
+            } catch (Exception e) {
+                // Silencioso - usa fallback
+            }
+        }
+
+        // Fallback background
+        if (!backgroundRendered) {
+            java.awt.GradientPaint bgGradient = new java.awt.GradientPaint(
+                    0, 0, new Color(10, 10, 30),
+                    0, GameConfig.SCREEN_HEIGHT, new Color(0, 50, 100)
+            );
+            g2d.setPaint(bgGradient);
+            g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+        }
+
+        // Aplicar transformação da câmera
+        int cameraX = 0;
+        int cameraY = 0;
+
+        try {
+            cameraX = cameraController.getCameraX();
+            cameraY = cameraController.getCameraY();
+        } catch (Exception e) {
+            // Usar posição padrão
+        }
+
+        g2d.translate(-cameraX, -cameraY);
+
+        // Renderizar plataformas
+        for (Platform platform : platforms) {
+            if (platform != null) {
+                try {
+                    platform.draw(g2d);
+                } catch (Exception e) {
+                    // Pular plataforma com erro
+                }
+            }
+        }
+
+        // Renderizar orbs (SISTEMA MISTO)
+        try {
+            WorldBuilder.renderWorldOrbs(g2d, cameraX, cameraY);
+        } catch (Exception e) {
+            // Silencioso
+        }
+
+        // Renderizar inimigos terrestres
+        if (enemies != null) {
+            for (Enemy enemy : enemies) {
+                if (enemy != null && enemy.x > -1000) {
+                    try {
+                        enemy.draw(g2d);
+                    } catch (Exception e) {
+                        // Pular inimigo com erro
+                    }
+                }
+            }
+        }
+
+        // Renderizar inimigos voadores
+        if (flyingEnemies != null) {
+            for (org.example.objects.FlyingEnemy flyingEnemy : flyingEnemies) {
+                if (flyingEnemy != null && flyingEnemy.x > -1000) {
+                    try {
+                        flyingEnemy.draw(g2d);
+                    } catch (Exception e) {
+                        // Pular inimigo voador com erro
+                    }
+                }
+            }
+        }
+
+        // Renderizar player
+        if (player != null) {
+            try {
+                player.draw(g2d);
+            } catch (Exception e) {
+                // Fallback: retângulo simples
+                g2d.setColor(Color.CYAN);
+                g2d.fillRect((int)player.x, (int)player.y, (int)player.width, (int)player.height);
+            }
+        }
+
+        // Resetar transformação da câmera
+        g2d.translate(cameraX, cameraY);
+
+        // Renderizar partículas
+        if (particleSystem != null) {
+            try {
+                particleSystem.render(g2d);
+            } catch (Exception e) {
+                // Silencioso
+            }
+        }
+
+        // Renderizar HUD
+        try {
+            drawSimpleHUD(g2d);
+        } catch (Exception e) {
+            // HUD mínimo de emergência
+            try {
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(new Font("Arial", Font.BOLD, 14));
+                g2d.drawString("Vidas: " + player.getLives(), 10, 20);
+                if (scoreSystem != null) {
+                    g2d.drawString("Score: " + scoreSystem.getCurrentScore(), 10, 40);
+                }
+            } catch (Exception ex) {
+                // Desistir do HUD
+            }
+        }
+
+        // Renderizar pausa
+=======
         // Fundo baseado na fase atual ⭐ NOVO
         if (levelSystem != null && levelSystem.getCurrentLevelData() != null) {
             g2d.setColor(levelSystem.getCurrentLevelData().backgroundColor);
@@ -687,6 +1679,7 @@ public class GamePanel extends JPanel {
         }
 
         // Indicador de pausa
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         if (gamePaused) {
             g2d.setColor(new Color(0, 0, 0, 150));
             g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
@@ -701,6 +1694,36 @@ public class GamePanel extends JPanel {
     }
 
     private void drawSimpleHUD(Graphics2D g2d) {
+<<<<<<< HEAD
+        drawLivesHUD(g2d);
+        drawScoreHUD(g2d);
+        drawEnergyBar(g2d);
+    }
+
+    private void drawLivesHUD(Graphics2D g2d) {
+        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.setColor(Color.WHITE);
+
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(10, 5, 120, 35, 5, 5);
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("LIVES", 15, 25);
+
+        int iconX = 80;
+        int iconY = 10;
+        int iconSize = 20;
+
+        for (int i = 0; i < 3; i++) {
+            if (i < player.getLives()) {
+                g2d.setColor(new Color(0, 150, 255));
+            } else {
+                g2d.setColor(new Color(100, 100, 100));
+            }
+
+            g2d.fillOval(iconX + (i * 25), iconY, iconSize, iconSize);
+
+=======
         // Vidas no canto superior esquerdo
         drawLivesHUD(g2d);
         
@@ -742,11 +1765,35 @@ public class GamePanel extends JPanel {
             g2d.fillOval(iconX + (i * 25), iconY, iconSize, iconSize);
             
             // Borda
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             g2d.setColor(Color.WHITE);
             g2d.setStroke(new BasicStroke(2));
             g2d.drawOval(iconX + (i * 25), iconY, iconSize, iconSize);
         }
     }
+<<<<<<< HEAD
+
+    private void drawScoreHUD(Graphics2D g2d) {
+        g2d.setFont(new Font("Arial", Font.BOLD, 20));
+        g2d.setColor(Color.WHITE);
+
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(GameConfig.SCREEN_WIDTH - 150, 5, 145, 35, 5, 5);
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(String.format("%06d", scoreSystem.getCurrentScore()),
+                GameConfig.SCREEN_WIDTH - 140, 28);
+
+        if (scoreSystem.getScoreMultiplier() > 1) {
+            g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            g2d.setColor(Color.YELLOW);
+            g2d.drawString("x" + scoreSystem.getScoreMultiplier(),
+                    GameConfig.SCREEN_WIDTH - 30, 28);
+        }
+    }
+
+    private void drawEnergyBar(Graphics2D g2d) {
+=======
     
     private void drawScoreHUD(Graphics2D g2d) {
         // Score simples no canto superior direito
@@ -773,10 +1820,36 @@ public class GamePanel extends JPanel {
     
     private void drawEnergyBar(Graphics2D g2d) {
         // Barra de energia no canto superior direito
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         int barX = GameConfig.SCREEN_WIDTH - 200;
         int barY = 50;
         int barWidth = 150;
         int barHeight = 20;
+<<<<<<< HEAD
+
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRoundRect(barX, barY, barWidth, barHeight, 5, 5);
+
+        int energy = (int) player.getCurrentEnergy();
+        int energyWidth = (int)((energy / 100.0) * (barWidth - 4));
+
+        Color energyColor;
+        if (energy > 60) {
+            energyColor = new Color(0, 255, 0);
+        } else if (energy > 30) {
+            energyColor = new Color(255, 255, 0);
+        } else {
+            energyColor = new Color(255, 0, 0);
+        }
+
+        g2d.setColor(energyColor);
+        g2d.fillRoundRect(barX + 2, barY + 2, energyWidth, barHeight - 4, 3, 3);
+
+=======
         
         // Fundo da barra
         g2d.setColor(new Color(0, 0, 0, 100));
@@ -805,11 +1878,25 @@ public class GamePanel extends JPanel {
         g2d.fillRoundRect(barX + 2, barY + 2, energyWidth, barHeight - 4, 3, 3);
         
         // Texto "ENERGY"
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         g2d.setFont(new Font("Arial", Font.BOLD, 12));
         g2d.setColor(Color.WHITE);
         g2d.drawString("ENERGY", barX, barY - 5);
     }
 
+<<<<<<< HEAD
+    private void createWindEffects() {
+        windEffects.add(new WindEffect(500, 200, 200, 100, 2.0f));
+        windEffects.add(new WindEffect(1200, 300, 150, 80, -1.5f));
+        windEffects.add(new WindEffect(2000, 150, 300, 120, 3.0f));
+        windEffects.add(new WindEffect(3000, 250, 180, 90, -2.0f));
+    }
+
+    private void updateWindEffects() {
+        for (WindEffect wind : windEffects) {
+            wind.update();
+            wind.applyWindEffect(player);
+=======
     private void drawLevelHUD(Graphics2D g2d) {
         if (levelSystem == null) return;
 
@@ -844,15 +1931,22 @@ public class GamePanel extends JPanel {
                     g2d.drawString("Distância: " + (int)distance, GameConfig.SCREEN_WIDTH - 190, 60);
                 }
             }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 
     private void drawGameOverMessage(Graphics2D g2d) {
+<<<<<<< HEAD
+        g2d.setColor(new Color(20, 20, 20, 200));
+        g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+
+=======
         // Fundo escuro
         g2d.setColor(new Color(20, 20, 20, 200));
         g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
 
         // Mensagem de game over
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         g2d.setColor(Color.RED);
         g2d.setFont(new Font("Arial", Font.BOLD, 48));
         FontMetrics fm = g2d.getFontMetrics();
@@ -860,7 +1954,10 @@ public class GamePanel extends JPanel {
         int textWidth = fm.stringWidth(gameOverText);
         g2d.drawString(gameOverText, (GameConfig.SCREEN_WIDTH - textWidth) / 2, GameConfig.SCREEN_HEIGHT / 2 - 50);
 
+<<<<<<< HEAD
+=======
         // Pontuação final
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 24));
         fm = g2d.getFontMetrics();
@@ -868,6 +1965,21 @@ public class GamePanel extends JPanel {
         textWidth = fm.stringWidth(scoreText);
         g2d.drawString(scoreText, (GameConfig.SCREEN_WIDTH - textWidth) / 2, GameConfig.SCREEN_HEIGHT / 2 + 20);
 
+<<<<<<< HEAD
+        g2d.setColor(new Color(0, 255, 255));
+        g2d.setFont(new Font("Arial", Font.BOLD, 18));
+        fm = g2d.getFontMetrics();
+
+        String restartText = "Pressione R para jogar novamente";
+        textWidth = fm.stringWidth(restartText);
+        g2d.drawString(restartText, (GameConfig.SCREEN_WIDTH - textWidth) / 2, GameConfig.SCREEN_HEIGHT / 2 + 80);
+
+        String menuText = "Pressione ESC para voltar ao menu";
+        textWidth = fm.stringWidth(menuText);
+        g2d.drawString(menuText, (GameConfig.SCREEN_WIDTH - textWidth) / 2, GameConfig.SCREEN_HEIGHT / 2 + 110);
+    }
+
+=======
         // Instrução
         g2d.setColor(Color.GRAY);
         g2d.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -879,6 +1991,7 @@ public class GamePanel extends JPanel {
 
     // === GETTERS E SETTERS ===
 
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public boolean isGameLoopActive() {
         return gameLoopActive;
     }
@@ -889,9 +2002,12 @@ public class GamePanel extends JPanel {
 
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
+<<<<<<< HEAD
+=======
         if (!gameOver) {
             System.out.println("Game Over resetado - jogo pode continuar");
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public boolean isGamePaused() {
@@ -910,6 +2026,20 @@ public class GamePanel extends JPanel {
         return player;
     }
 
+<<<<<<< HEAD
+    public void disableEnemies() {
+        if (enemiesEnabled) {
+            enemiesEnabled = false;
+        }
+    }
+
+    public void enableEnemies() {
+        if (!enemiesEnabled) {
+            enemiesEnabled = true;
+        }
+    }
+
+=======
     // === MÉTODOS PARA ATIVAR/DESATIVAR INIMIGOS ===
 
     /**
@@ -938,13 +2068,17 @@ public class GamePanel extends JPanel {
      * Verifica se os inimigos estão ativos
      * @return true se os inimigos estão ativos, false caso contrário
      */
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public boolean areEnemiesEnabled() {
         return enemiesEnabled;
     }
 
+<<<<<<< HEAD
+=======
     /**
      * Alterna o estado dos inimigos (ativa/desativa)
      */
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void toggleEnemies() {
         if (enemiesEnabled) {
             disableEnemies();
@@ -953,7 +2087,10 @@ public class GamePanel extends JPanel {
         }
     }
 
+<<<<<<< HEAD
+=======
     // Método auxiliar para trocar para o menu (fallback)
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private void switchToMenu() {
         Container parent = getParent();
         if (parent != null) {
@@ -965,6 +2102,32 @@ public class GamePanel extends JPanel {
         }
     }
 
+<<<<<<< HEAD
+    private void handleEscapePressed() {
+
+        stopGameLoop();
+
+        gameOver = false;
+        gamePaused = false;
+
+        platforms.clear();
+        enemies.clear();
+        energyOrbs.clear();
+        enemyRespawnQueue.clear();
+
+        if (particleSystem != null) {
+            particleSystem.clear();
+        }
+
+        if (gameFrame != null) {
+            gameFrame.returnToMainMenu();
+        } else {
+            java.awt.Container parent = this.getParent();
+            if (parent != null && parent.getLayout() instanceof java.awt.CardLayout) {
+                java.awt.CardLayout layout = (java.awt.CardLayout) parent.getLayout();
+                layout.show(parent, "MENU");
+            }
+=======
     // Método público para ser chamado pelo InputHandler quando ESC for pressionado
     public void handleEscapePressed() {
         if (gameFrame != null) {
@@ -972,6 +2135,7 @@ public class GamePanel extends JPanel {
         } else {
             // Fallback
             switchToMenu();
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 }

@@ -434,6 +434,26 @@ public class EnergyOrb {
     public void onCollect(Player player) {
         collected = true;
 
+<<<<<<< HEAD
+        // Tocar som de efeito ao coletar (com base no tipo)
+        try {
+            switch (orbType) {
+                case "rare":
+                    org.example.audio.AudioManager.playEffect("/audio/orb_rare.wav", -3.0f);
+                    break;
+                case "legendary":
+                    org.example.audio.AudioManager.playEffect("/audio/orb_legendary.wav", -3.0f);
+                    break;
+                default:
+                    org.example.audio.AudioManager.playEffect("/audio/orb_collect.wav", -3.0f);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         // Restaurar energia do player
         player.energyLevel = Math.min(100, player.energyLevel + energyValue);
 

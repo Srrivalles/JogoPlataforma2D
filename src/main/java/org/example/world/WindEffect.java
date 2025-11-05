@@ -78,6 +78,8 @@ public class WindEffect {
     /**
      * Desenha o efeito de vento
      */
+<<<<<<< HEAD
+=======
     public void draw(Graphics2D g2d) {
         if (!isActive) return;
         
@@ -97,6 +99,7 @@ public class WindEffect {
         // Desenhar setas indicando direção
         drawWindArrows(g2d);
     }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     
     private void createWindParticles() {
         for (int i = 0; i < 10; i++) {
@@ -109,6 +112,9 @@ public class WindEffect {
         int particleY = y + (int)(Math.random() * height);
         particles.add(new WindParticle(particleX, particleY, windStrength));
     }
+<<<<<<< HEAD
+
+=======
     
     private void drawWindArrows(Graphics2D g2d) {
         g2d.setColor(new Color(255, 255, 255, 150));
@@ -130,6 +136,7 @@ public class WindEffect {
     public Rectangle getArea() { return area; }
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { this.isActive = active; }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public float getWindStrength() { return windStrength; }
     
     /**

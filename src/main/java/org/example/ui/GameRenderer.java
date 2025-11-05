@@ -1,8 +1,12 @@
 package org.example.ui;
 
+<<<<<<< HEAD
+// Sistema de sprites removido
+=======
 import org.example.graphics.SpriteRenderer;
 import org.example.graphics.AnimationManager;
 import org.example.graphics.Animation;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -13,8 +17,11 @@ import org.example.objects.EnergyOrb;
 import org.example.objects.Player;
 
 public class GameRenderer {
+<<<<<<< HEAD
+=======
     
     private static SpriteRenderer spriteRenderer = SpriteRenderer.getInstance();
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     public static void renderPlatforms(Graphics2D g2d, ArrayList<Platform> platforms, CameraController camera) {
         for (Platform platform : platforms) {
@@ -34,6 +41,10 @@ public class GameRenderer {
     
     private static void renderPlatformSprite(Graphics2D g2d, Platform platform) {
         // Determinar tipo de plataforma e animação
+<<<<<<< HEAD
+        // Renderização geométrica (sprites removidos)
+        renderPlatformLegacy(g2d, platform);
+=======
         String animationName = "platform_normal";
         if (platform.getType() != null) {
             switch (platform.getType()) {
@@ -56,6 +67,7 @@ public class GameRenderer {
             // Fallback caso sprite/animação não esteja disponível
             renderPlatformLegacy(g2d, platform);
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
     
     private static void renderPlatformLegacy(Graphics2D g2d, Platform platform) {
@@ -99,6 +111,10 @@ public class GameRenderer {
     }
     
     private static void renderEnemySprite(Graphics2D g2d, Enemy enemy) {
+<<<<<<< HEAD
+        // Renderização geométrica (sprites removidos)
+        renderEnemyFallback(g2d, enemy);
+=======
         // Determinar animação baseada no estado do inimigo
         String animationName = "enemy_idle";
         if (Math.abs(enemy.velocityX) > 0.1) {
@@ -112,6 +128,7 @@ public class GameRenderer {
         } else {
             renderEnemyFallback(g2d, enemy);
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private static void renderEnemyFallback(Graphics2D g2d, Enemy enemy) {
@@ -158,12 +175,17 @@ public class GameRenderer {
     }
     
     private static void renderOrbSprite(Graphics2D g2d, EnergyOrb orb) {
+<<<<<<< HEAD
+        // Renderização geométrica (sprites removidos)
+        renderOrbFallback(g2d, orb);
+=======
         Animation anim = AnimationManager.getInstance().getAnimation("orb_idle");
         if (anim != null && anim.getCurrentFrame() != null) {
             spriteRenderer.renderAnimation(g2d, "orb_idle", (int)orb.x, (int)orb.y);
         } else {
             renderOrbFallback(g2d, orb);
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private static void renderOrbFallback(Graphics2D g2d, EnergyOrb orb) {
@@ -211,6 +233,10 @@ public class GameRenderer {
     }
     
     private static void renderPlayerSprite(Graphics2D g2d, Player player) {
+<<<<<<< HEAD
+        // Renderização geométrica (sprites removidos)
+        renderPlayerFallback(g2d, player);
+=======
         // Determinar animação baseada no estado do player
         String animationName = "player_idle";
         
@@ -229,6 +255,7 @@ public class GameRenderer {
         } else {
             renderPlayerFallback(g2d, player);
         }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private static void renderPlayerFallback(Graphics2D g2d, Player player) {

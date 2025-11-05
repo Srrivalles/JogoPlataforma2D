@@ -102,8 +102,12 @@ public class EnergyOrbEntity extends Entity {
         
         // Efeito visual de coleta
         render.setAlpha(0.0f);
+<<<<<<< HEAD
+
+=======
         
         System.out.println("Orb coletada! Energia: " + energyValue);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
     
     // Métodos para compatibilidade

@@ -1,12 +1,21 @@
 package org.example.inputs;
 
+<<<<<<< HEAD
+=======
 import org.example.ui.ComponentGamePanel;
 import org.example.ui.GamePanel;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
+<<<<<<< HEAD
+import org.example.ui.ComponentGamePanel;
+import org.example.ui.GamePanel;
+
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 public class InputHandler implements KeyListener {
     private ComponentGamePanel componentGamePanel;
     private GamePanel gamePanel;
@@ -116,6 +125,15 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_E:
                 ePressed = true;
                 break;
+<<<<<<< HEAD
+            case KeyEvent.VK_F11:
+                // Alternar tela cheia via GamePanel
+                if (gamePanel != null && gamePanel.getGameFrame() != null) {
+                    gamePanel.getGameFrame().toggleFullScreen();
+                }
+                break;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
     
