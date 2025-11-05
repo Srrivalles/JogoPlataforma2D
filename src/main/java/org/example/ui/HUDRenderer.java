@@ -63,6 +63,14 @@ public class HUDRenderer {
         g2d.fillRect(50, 50, 100, 100);
         g2d.setColor(Color.WHITE);
         g2d.drawString("DEBUG: Se você vê isso, o render funciona!", 60, 110);
+<<<<<<< HEAD
+=======
+
+        // Debug info no console
+        System.out.println("Renderizando - Player: [" + player.x + ", " + player.y + "] Camera: [" +
+                camera.getCameraX() + ", " + camera.getCameraY() + "]");
+        System.out.println("Plataformas: " + platformCount + ", Inimigos: " + enemyCount + ", Orbs: " + orbCount);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public static void drawBackground(Graphics2D g2d) {
@@ -76,9 +84,12 @@ public class HUDRenderer {
     }
 
     public static void drawErrorScreen(Graphics2D g2d, String errorMessage) {
+<<<<<<< HEAD
         if (errorMessage == null || errorMessage.trim().isEmpty()) {
             errorMessage = "Erro desconhecido na renderização";
         }
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
         g2d.setColor(Color.RED);

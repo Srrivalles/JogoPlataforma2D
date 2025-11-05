@@ -78,6 +78,28 @@ public class WindEffect {
     /**
      * Desenha o efeito de vento
      */
+<<<<<<< HEAD
+=======
+    public void draw(Graphics2D g2d) {
+        if (!isActive) return;
+        
+        // Desenhar área do vento (semi-transparente)
+        g2d.setColor(windColor);
+        g2d.fillRect(x, y, width, height);
+        
+        // Desenhar borda
+        g2d.setColor(new Color(100, 200, 255, 200));
+        g2d.drawRect(x, y, width, height);
+        
+        // Desenhar partículas
+        for (WindParticle particle : particles) {
+            particle.draw(g2d);
+        }
+        
+        // Desenhar setas indicando direção
+        drawWindArrows(g2d);
+    }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     
     private void createWindParticles() {
         for (int i = 0; i < 10; i++) {
@@ -90,7 +112,31 @@ public class WindEffect {
         int particleY = y + (int)(Math.random() * height);
         particles.add(new WindParticle(particleX, particleY, windStrength));
     }
+<<<<<<< HEAD
 
+=======
+    
+    private void drawWindArrows(Graphics2D g2d) {
+        g2d.setColor(new Color(255, 255, 255, 150));
+        g2d.setStroke(new java.awt.BasicStroke(2));
+        
+        int arrowCount = width / 40; // Uma seta a cada 40 pixels
+        for (int i = 0; i < arrowCount; i++) {
+            int arrowX = x + 20 + (i * 40);
+            int arrowY = y + height / 2;
+            
+            // Desenhar seta
+            g2d.drawLine(arrowX, arrowY, arrowX + 15, arrowY);
+            g2d.drawLine(arrowX + 15, arrowY, arrowX + 10, arrowY - 3);
+            g2d.drawLine(arrowX + 15, arrowY, arrowX + 10, arrowY + 3);
+        }
+    }
+    
+    // Getters
+    public Rectangle getArea() { return area; }
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { this.isActive = active; }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public float getWindStrength() { return windStrength; }
     
     /**

@@ -1,5 +1,6 @@
 package org.example.ui;
 
+<<<<<<< HEAD
 import java.awt.BasicStroke;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -12,16 +13,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
+=======
+import javax.swing.*;
+
+import org.example.main.CyberRunnerGame;
+import java.awt.*;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import org.example.world.MapTheme;
 import javax.swing.JPanel;
 
 import org.example.main.CyberRunnerGame;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 public class MenuSystem extends JPanel {
     // Estados do menu
     public enum GameState {
@@ -30,10 +40,14 @@ public class MenuSystem extends JPanel {
         PAUSED,
         GAME_OVER,
         HIGH_SCORES,
+<<<<<<< HEAD
         CONTROLS,
         ENTERING_HIGH_SCORE,
 
         THEME_SELECTION
+=======
+        CONTROLS
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     // Dimensões usando GameConfig
@@ -53,6 +67,7 @@ public class MenuSystem extends JPanel {
     long gameStartTime = 0;
     long gameEndTime = 0;
 
+<<<<<<< HEAD
     // Gerenciador de High Scores
     private HighScoreManager highScoreManager;
     // --- Variáveis para a tela de High Score Interativa ---
@@ -60,6 +75,8 @@ public class MenuSystem extends JPanel {
     private int currentInitialIndex = 0;
     private int newPlayerScore = 0;
     private int newScoreRank = -1;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     // Animações do menu
     int animationTimer = 0;
     float logoGlow = 0;
@@ -87,11 +104,15 @@ public class MenuSystem extends JPanel {
     Font subtitleFont;
 
     // Opções dos menus
+<<<<<<< HEAD
     // Mude as opções do menu principal
     String[] mainOptions = {"SELECT THEME", "CONTROLS", "HIGH SCORES", "EXIT"}; // Mude "START GAME"
 
     // Crie opções para a nova tela
     String[] themeOptions = {"CYBERPUNK", "HALLOWEEN", "BACK"};
+=======
+    String[] mainOptions = {"START GAME", "CONTROLS", "HIGH SCORES", "EXIT"};
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     String[] controlsOptions = {"BACK"};
     String[] gameOverOptions = {"RESTART (R)", "MAIN MENU (L)"};
 
@@ -101,9 +122,12 @@ public class MenuSystem extends JPanel {
         this.setDoubleBuffered(true);
         this.setFocusable(true);
 
+<<<<<<< HEAD
         // Inicializar gerenciador de High Scores
         this.highScoreManager = new HighScoreManager();
 
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         // Inicializar fontes
         try {
             titleFont = new Font("Arial", Font.BOLD, 56);
@@ -120,6 +144,7 @@ public class MenuSystem extends JPanel {
         setupControls();
         initMenuParticles();
         startAnimationLoop();
+<<<<<<< HEAD
         
         // Tocar música de menu
         try {
@@ -127,6 +152,8 @@ public class MenuSystem extends JPanel {
         } catch (Exception e) {
             // Ignorar erros de áudio
         }
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public void setGameFrame(CyberRunnerGame gameFrame) {
@@ -141,6 +168,7 @@ public class MenuSystem extends JPanel {
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+<<<<<<< HEAD
                 if (currentState == GameState.ENTERING_HIGH_SCORE) {
                     handleEnterHighScoreInput(e);
                     return; // Impede que o input normal do menu seja processado
@@ -152,6 +180,15 @@ public class MenuSystem extends JPanel {
                                 navigateUp();
                                 upPressed = true;
                             }
+=======
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_W:
+                        if (!upPressed) {
+                            navigateUp();
+                            upPressed = true;
+                        }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                         break;
                     case KeyEvent.VK_DOWN:
                     case KeyEvent.VK_S:
@@ -183,12 +220,15 @@ public class MenuSystem extends JPanel {
                             backToMainMenu();
                         }
                         break;
+<<<<<<< HEAD
                     case KeyEvent.VK_F11:
                         // Alternar tela cheia via GameFrame
                         if (gameFrame != null) {
                             gameFrame.toggleFullScreen();
                         }
                         break;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 }
             }
 
@@ -236,6 +276,7 @@ public class MenuSystem extends JPanel {
         repaint();
     }
 
+<<<<<<< HEAD
     private void handleThemeSelection() {
         MapTheme chosenTheme = MapTheme.CYBERPUNK; // Padrão
 
@@ -254,6 +295,8 @@ public class MenuSystem extends JPanel {
         }
     }
 
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private void navigateDown() {
         int maxOptions = getMaxOptionsForCurrentState();
         selectedOption = Math.min(maxOptions - 1, selectedOption + 1);
@@ -264,8 +307,11 @@ public class MenuSystem extends JPanel {
         switch (currentState) {
             case MAIN_MENU:
                 return mainOptions.length;
+<<<<<<< HEAD
             case THEME_SELECTION:
                 return themeOptions.length;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             case CONTROLS:
                 return controlsOptions.length;
             case GAME_OVER:
@@ -282,9 +328,12 @@ public class MenuSystem extends JPanel {
             case MAIN_MENU:
                 handleMainMenuSelection();
                 break;
+<<<<<<< HEAD
             case THEME_SELECTION: // <--- ADICIONE ESTE CASO
                 handleThemeSelection();
                 break;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             case CONTROLS:
                 if (selectedOption == 0) {
                     showMainMenu();
@@ -306,7 +355,11 @@ public class MenuSystem extends JPanel {
     private void handleMainMenuSelection() {
         switch (selectedOption) {
             case 0:
+<<<<<<< HEAD
                 showThemeSelectionScreen();
+=======
+                startGame();
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 break;
             case 1:
                 showControlsScreen();
@@ -341,6 +394,10 @@ public class MenuSystem extends JPanel {
             case MAIN_MENU:
             case PLAYING:
             case PAUSED:
+<<<<<<< HEAD
+=======
+                // Comportamento específico para cada estado
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 break;
         }
     }
@@ -410,6 +467,7 @@ public class MenuSystem extends JPanel {
         enemiesDefeated = enemies;
         gameEndTime = System.currentTimeMillis();
 
+<<<<<<< HEAD
         if (highScoreManager.isHighScore(score)) {
             newPlayerScore = score;
             currentState = GameState.ENTERING_HIGH_SCORE;
@@ -420,11 +478,16 @@ public class MenuSystem extends JPanel {
         var scores = highScoreManager.getHighScores();
         if (!scores.isEmpty()) {
             highScore = scores.get(0).score;
+=======
+        if (currentScore > highScore) {
+            highScore = currentScore;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
 
         repaint();
     }
 
+<<<<<<< HEAD
     private void startGame(MapTheme theme) { // Adicione o parâmetro
         currentState = GameState.PLAYING;
         // ... resto do seu código de startGame ...
@@ -434,10 +497,34 @@ public class MenuSystem extends JPanel {
             gameFrame.startNewGame(theme); // Passamos o tema para o frame principal
         } else {
             // Lógica antiga (pode não funcionar mais dependendo da sua estrutura)
+=======
+    private void startGame() {
+        currentState = GameState.PLAYING;
+        gameStartTime = System.currentTimeMillis();
+        currentScore = 0;
+        energyOrbsCollected = 0;
+        enemiesDefeated = 0;
+
+        if (gameFrame != null) {
+            gameFrame.startNewGame();
+        } else {
+            Container parent = getParent();
+            if (parent != null) {
+                CardLayout cl = (CardLayout) parent.getLayout();
+                cl.show(parent, "GAME");
+
+                if (gamePanel != null) {
+                    gamePanel.requestFocusInWindow();
+                    gamePanel.resetGame();
+                    gamePanel.startGameLoop();
+                }
+            }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 
     private void restartGame() {
+<<<<<<< HEAD
 
         showThemeSelectionScreen();
     }
@@ -446,6 +533,15 @@ public class MenuSystem extends JPanel {
         selectedOption = 0;
         repaint();
     }
+=======
+        if (gameFrame != null) {
+            gameFrame.startNewGame();
+        } else {
+            startGame();
+        }
+    }
+
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private void backToMainMenu() {
         showMainMenu();
         if (gameFrame != null) {
@@ -469,6 +565,7 @@ public class MenuSystem extends JPanel {
     public GameState getCurrentState() {
         return currentState;
     }
+<<<<<<< HEAD
     
     /**
      * Retorna o gerenciador de High Scores
@@ -476,6 +573,8 @@ public class MenuSystem extends JPanel {
     public HighScoreManager getHighScoreManager() {
         return highScoreManager;
     }
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     // Sistema de partículas e animação
     private void initMenuParticles() {
@@ -530,18 +629,24 @@ public class MenuSystem extends JPanel {
             case MAIN_MENU:
                 drawMainMenu(g2d);
                 break;
+<<<<<<< HEAD
             case THEME_SELECTION: // <--- ADICIONE ESTE CASO
                 drawThemeSelectionScreen(g2d);
                 break;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             case CONTROLS:
                 drawControlsScreen(g2d);
                 break;
             case HIGH_SCORES:
                 drawHighScoresScreen(g2d);
                 break;
+<<<<<<< HEAD
             case ENTERING_HIGH_SCORE:
                 drawEnterHighScoreScreen(g2d);
                 break;
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             case GAME_OVER:
                 drawGameOverScreen(g2d);
                 break;
@@ -556,6 +661,7 @@ public class MenuSystem extends JPanel {
         g2d.dispose();
     }
 
+<<<<<<< HEAD
     private void drawThemeSelectionScreen(Graphics2D g2d) {
         // Reutilize o fundo e o grid do menu principal
         drawMainMenu(g2d);
@@ -589,6 +695,8 @@ public class MenuSystem extends JPanel {
             }
         }
     }
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private void drawMainMenu(Graphics2D g2d) {
         // Fundo com gradiente radial
         Point2D center = new Point2D.Float(SCREEN_WIDTH / 2f, SCREEN_HEIGHT / 2f);
@@ -624,6 +732,7 @@ public class MenuSystem extends JPanel {
         drawInstructions(g2d);
     }
 
+<<<<<<< HEAD
     // NOVO MÉTODO PARA DESENHAR A TELA DE INSERIR INICIAIS
     private void drawEnterHighScoreScreen(Graphics2D g2d) {
         // Fundo escuro com um brilho central
@@ -754,6 +863,32 @@ public class MenuSystem extends JPanel {
             for (int y = 0; y < SCREEN_HEIGHT; y += 80) {
                 if ((x + y + animationTimer * 2) % 400 < 30) {
                     g2d.fillOval(x - 1, y - 1, 2, 2);
+=======
+    private void drawAnimatedGrid(Graphics2D g2d) {
+        g2d.setColor(new Color(primaryCyan.getRed(), primaryCyan.getGreen(), primaryCyan.getBlue(), 15));
+        g2d.setStroke(new BasicStroke(1));
+
+        // Linhas verticais com animação
+        for (int x = 0; x < SCREEN_WIDTH; x += 60) {
+            float alpha = (float)(Math.sin((x + animationTimer) * 0.01) * 0.3 + 0.7);
+            g2d.setColor(new Color(primaryCyan.getRed(), primaryCyan.getGreen(), primaryCyan.getBlue(), (int)(20 * alpha)));
+            g2d.drawLine(x, 0, x, SCREEN_HEIGHT);
+        }
+
+        // Linhas horizontais com animação
+        for (int y = 0; y < SCREEN_HEIGHT; y += 60) {
+            float alpha = (float)(Math.sin((y + animationTimer) * 0.01) * 0.3 + 0.7);
+            g2d.setColor(new Color(primaryCyan.getRed(), primaryCyan.getGreen(), primaryCyan.getBlue(), (int)(20 * alpha)));
+            g2d.drawLine(0, y, SCREEN_WIDTH, y);
+        }
+
+        // Pontos de intersecção brilhantes
+        g2d.setColor(new Color(accentYellow.getRed(), accentYellow.getGreen(), accentYellow.getBlue(), 60));
+        for (int x = 0; x < SCREEN_WIDTH; x += 60) {
+            for (int y = 0; y < SCREEN_HEIGHT; y += 60) {
+                if ((x + y + animationTimer * 2) % 300 < 50) {
+                    g2d.fillOval(x - 2, y - 2, 4, 4);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 }
             }
         }
@@ -936,11 +1071,16 @@ public class MenuSystem extends JPanel {
             g2d.drawString(stats[i], (SCREEN_WIDTH - statWidth) / 2, startY + i * 25);
         }
 
+<<<<<<< HEAD
         // Menu de opções (retângulo de destaque centralizado com base no texto)
+=======
+        // Menu de opções
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         startY = 450;
         for (int i = 0; i < gameOverOptions.length; i++) {
             Color textColor = (i == selectedOption) ? accentYellow : primaryCyan;
 
+<<<<<<< HEAD
             g2d.setFont(menuFont);
             FontMetrics optFm = g2d.getFontMetrics();
             int optWidth = optFm.stringWidth(gameOverOptions[i]);
@@ -962,6 +1102,21 @@ public class MenuSystem extends JPanel {
             }
 
             g2d.setColor(textColor);
+=======
+            if (i == selectedOption) {
+                g2d.setColor(new Color(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), 50));
+                g2d.fillRoundRect(200, startY + i * 40 - 15, 400, 30, 15, 15);
+
+                g2d.setColor(textColor);
+                g2d.setStroke(new BasicStroke(2));
+                g2d.drawRoundRect(200, startY + i * 40 - 15, 400, 30, 15, 15);
+            }
+
+            g2d.setFont(menuFont);
+            g2d.setColor(textColor);
+            FontMetrics optFm = g2d.getFontMetrics();
+            int optWidth = optFm.stringWidth(gameOverOptions[i]);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             g2d.drawString(gameOverOptions[i], (SCREEN_WIDTH - optWidth) / 2, startY + i * 40);
         }
 
@@ -997,8 +1152,13 @@ public class MenuSystem extends JPanel {
         // Controles do jogo
         String[] controls = {
                 "MOVEMENT",
+<<<<<<< HEAD
                 "A/D or Arrow Keys - Move Left/Right",
                 "SPACE or W or Up Arrow - Jump",
+=======
+                "A/D or ← → - Move Left/Right",
+                "SPACE or W or ↑ - Jump",
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 "",
                 "GAME ACTIONS",
                 "ESC - Pause Game",
@@ -1006,7 +1166,11 @@ public class MenuSystem extends JPanel {
                 "L - Main Menu (Game Over)",
                 "",
                 "MENU NAVIGATION",
+<<<<<<< HEAD
                 "Arrow Keys or W/S - Navigate",
+=======
+                "↑↓ or W/S - Navigate",
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
                 "ENTER or SPACE - Select",
                 "ESC - Back"
         };
@@ -1037,12 +1201,17 @@ public class MenuSystem extends JPanel {
             startY += 35;
         }
 
+<<<<<<< HEAD
         // Botão voltar melhorado
+=======
+        // Botão voltar
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         int buttonY = SCREEN_HEIGHT - 100;
         boolean backSelected = (selectedOption == 0);
 
         Color buttonColor = backSelected ? accentYellow : primaryCyan;
 
+<<<<<<< HEAD
         // Fundo do botão
         if (backSelected) {
             g2d.setColor(new Color(buttonColor.getRed(), buttonColor.getGreen(), buttonColor.getBlue(), 30));
@@ -1055,12 +1224,27 @@ public class MenuSystem extends JPanel {
         g2d.drawRoundRect(SCREEN_WIDTH/2 - 120, buttonY - 25, 240, 50, 25, 25);
 
         // Texto do botão
+=======
+        if (backSelected) {
+            g2d.setColor(new Color(buttonColor.getRed(), buttonColor.getGreen(), buttonColor.getBlue(), 50));
+            g2d.fillRoundRect(300, buttonY - 20, 200, 40, 20, 20);
+
+            g2d.setColor(buttonColor);
+            g2d.setStroke(new BasicStroke(2));
+            g2d.drawRoundRect(300, buttonY - 20, 200, 40, 20, 20);
+        }
+
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         g2d.setFont(menuFont);
         g2d.setColor(buttonColor);
         String backText = "BACK TO MENU";
         FontMetrics backFm = g2d.getFontMetrics();
         int backWidth = backFm.stringWidth(backText);
+<<<<<<< HEAD
         g2d.drawString(backText, (SCREEN_WIDTH - backWidth) / 2, buttonY + 5);
+=======
+        g2d.drawString(backText, (SCREEN_WIDTH - backWidth) / 2, buttonY);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void drawHighScoresScreen(Graphics2D g2d) {
@@ -1078,6 +1262,7 @@ public class MenuSystem extends JPanel {
         // Título
         g2d.setFont(titleFont);
         g2d.setColor(accentYellow);
+<<<<<<< HEAD
         String title = "🏆 HIGH SCORES 🏆";
         FontMetrics fm = g2d.getFontMetrics();
         int titleWidth = fm.stringWidth(title);
@@ -1155,6 +1340,110 @@ public class MenuSystem extends JPanel {
         g2d.drawString(backText, (SCREEN_WIDTH - backWidth) / 2, buttonY + 5);
     }
 
+=======
+        String title = "HIGH SCORES";
+        FontMetrics fm = g2d.getFontMetrics();
+        int titleWidth = fm.stringWidth(title);
+        g2d.drawString(title, (SCREEN_WIDTH - titleWidth) / 2, 100);
+
+        // Efeito de brilho no título
+        g2d.setColor(new Color(255, 255, 255, 50));
+        g2d.drawString(title, (SCREEN_WIDTH - titleWidth) / 2 - 1, 99);
+
+        // Pontuação atual
+        g2d.setFont(new Font("Arial", Font.BOLD, 32));
+        g2d.setColor(primaryCyan);
+
+        String currentScoreText = "CURRENT HIGH SCORE";
+        String scoreValue = String.valueOf(highScore);
+
+        FontMetrics scoreFm = g2d.getFontMetrics();
+        int currentWidth = scoreFm.stringWidth(currentScoreText);
+
+        g2d.drawString(currentScoreText, (SCREEN_WIDTH - currentWidth) / 2, 200);
+
+        // Valor da pontuação com efeito especial
+        g2d.setFont(new Font("Arial", Font.BOLD, 48));
+        g2d.setColor(accentYellow);
+
+        // Efeito de pulsação
+        float pulse = (float)(Math.sin(animationTimer * 0.1) * 0.2 + 1);
+        Font pulsedFont = g2d.getFont().deriveFont(g2d.getFont().getSize() * pulse);
+        g2d.setFont(pulsedFont);
+
+        FontMetrics pulsedFm = g2d.getFontMetrics();
+        int pulsedWidth = pulsedFm.stringWidth(scoreValue);
+
+        // Sombra da pontuação
+        g2d.setColor(new Color(255, 255, 0, 100));
+        g2d.drawString(scoreValue, (SCREEN_WIDTH - pulsedWidth) / 2 + 2, 272);
+
+        // Pontuação principal
+        g2d.setColor(accentYellow);
+        g2d.drawString(scoreValue, (SCREEN_WIDTH - pulsedWidth) / 2, 270);
+
+        // Estatísticas detalhadas se houver jogo jogado
+        if (currentScore > 0 || energyOrbsCollected > 0 || enemiesDefeated > 0) {
+            g2d.setFont(new Font("Arial", Font.BOLD, 20));
+            g2d.setColor(secondaryPink);
+
+            String lastGameTitle = "LAST GAME STATS";
+            FontMetrics lastFm = g2d.getFontMetrics();
+            int lastWidth = lastFm.stringWidth(lastGameTitle);
+            g2d.drawString(lastGameTitle, (SCREEN_WIDTH - lastWidth) / 2, 350);
+
+            g2d.setFont(scoreFont);
+            g2d.setColor(primaryCyan);
+
+            String[] lastStats = {
+                    "Score: " + currentScore,
+                    "Energy Orbs: " + energyOrbsCollected,
+                    "Enemies Defeated: " + enemiesDefeated
+            };
+
+            int statsY = 380;
+            for (String stat : lastStats) {
+                FontMetrics statFm = g2d.getFontMetrics();
+                int statWidth = statFm.stringWidth(stat);
+                g2d.drawString(stat, (SCREEN_WIDTH - statWidth) / 2, statsY);
+                statsY += 25;
+            }
+        } else {
+            // Mensagem motivacional se não há pontuação
+            g2d.setFont(new Font("Arial", Font.ITALIC, 24));
+            g2d.setColor(secondaryPink);
+
+            String motivational = "Play your first game to set a high score!";
+            FontMetrics motivFm = g2d.getFontMetrics();
+            int motivWidth = motivFm.stringWidth(motivational);
+            g2d.drawString(motivational, (SCREEN_WIDTH - motivWidth) / 2, 350);
+        }
+
+        // Botão voltar
+        int buttonY = SCREEN_HEIGHT - 100;
+        boolean backSelected = (selectedOption == 0);
+
+        Color buttonColor = backSelected ? accentYellow : primaryCyan;
+
+        if (backSelected) {
+            g2d.setColor(new Color(buttonColor.getRed(), buttonColor.getGreen(), buttonColor.getBlue(), 50));
+            g2d.fillRoundRect(300, buttonY - 20, 200, 40, 20, 20);
+
+            g2d.setColor(buttonColor);
+            g2d.setStroke(new BasicStroke(2));
+            g2d.drawRoundRect(300, buttonY - 20, 200, 40, 20, 20);
+        }
+
+        g2d.setFont(menuFont);
+        g2d.setColor(buttonColor);
+        String backText = "BACK TO MENU";
+        FontMetrics backFm = g2d.getFontMetrics();
+        int backWidth = backFm.stringWidth(backText);
+        g2d.drawString(backText, (SCREEN_WIDTH - backWidth) / 2, buttonY);
+    }
+
+    // Método auxiliar para formatar tempo
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private String formatTime(long seconds) {
         long minutes = seconds / 60;
         long remainingSeconds = seconds % 60;

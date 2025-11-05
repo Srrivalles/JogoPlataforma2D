@@ -24,7 +24,11 @@ public class Player extends PlayerEntity {
     public boolean facingRight = true, isOnGround = false;
     public int animationTimer = 0, hoverOffset = 0;
 
+<<<<<<< HEAD
     // Sistema de Dash/Teleporte - VARIAVEIS CORRIGIDAS
+=======
+    // Sistema de Dash/Teleporte - VARIÁVEIS CORRIGIDAS
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     boolean dashIgnoresGravity = false; // Para dash no ar não cair
     int dashOriginalY = 0; // Para manter altura durante dash
     boolean isTeleportDash = true; // true = teleporte, false = dash normal
@@ -205,6 +209,7 @@ public class Player extends PlayerEntity {
             velocityY = -10; // Força do pulo
             isOnGround = false;
             currentMode = "boost";
+<<<<<<< HEAD
 
             // ✅ SOM DO PULO (já deve estar aqui)
             try {
@@ -216,6 +221,13 @@ public class Player extends PlayerEntity {
     }
 
 
+=======
+            // REMOVIDO: não consome energia para pular
+        }
+    }
+
+    // MÉTODO DASH CORRIGIDO E COMPLETO
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void dash() {
         // CONDIÇÕES SIMPLIFICADAS - funciona no chão E no ar
         if (canDash && energyLevel >= DASH_ENERGY_COST && !isDashing) {
@@ -225,9 +237,12 @@ public class Player extends PlayerEntity {
             dashTimer = DASH_DURATION;
             dashCooldown = DASH_COOLDOWN_TIME;
 
+<<<<<<< HEAD
             // ✅ SOM DO DASH
             org.example.audio.AudioManager.playDashSound();
 
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             int dashDirection = facingRight ? 1 : -1;
 
             if (isTeleportDash) {
@@ -254,6 +269,7 @@ public class Player extends PlayerEntity {
             teleportEffectTimer = 10;
 
             String location = isOnGround ? "CHÃO" : "AR";
+<<<<<<< HEAD
         } else {
             // Debug - por que o dash não funcionou?
             if (!canDash) {}
@@ -263,6 +279,17 @@ public class Player extends PlayerEntity {
     }
 
 
+=======
+            System.out.println("DASH ATIVADO no " + location + "! Posição: [" + x + ", " + y + "]");
+        } else {
+            // Debug - por que o dash não funcionou?
+            if (!canDash) System.out.println("Dash em cooldown! Resta: " + dashCooldown + " frames");
+            if (energyLevel < DASH_ENERGY_COST) System.out.println("Energia insuficiente: " + energyLevel + "/" + DASH_ENERGY_COST);
+            if (isDashing) System.out.println("Já está dashando!");
+        }
+    }
+
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     // MÉTODO UPDATE DASH CORRIGIDO
     private void updateDash() {
         // Atualizar timer do dash
@@ -277,7 +304,11 @@ public class Player extends PlayerEntity {
                     velocityX = 0; // Para o movimento no dash normal
                 }
 
+<<<<<<< HEAD
                 
+=======
+                System.out.println("DASH TERMINADO!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             }
         }
 
@@ -286,6 +317,10 @@ public class Player extends PlayerEntity {
             dashCooldown--;
             if (dashCooldown <= 0) {
                 canDash = true;
+<<<<<<< HEAD
+=======
+                System.out.println("DASH DISPONÍVEL NOVAMENTE!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             }
         }
 
@@ -301,6 +336,10 @@ public class Player extends PlayerEntity {
     // MÉTODO PARA ALTERNAR TIPO DE DASH
     public void toggleDashType() {
         isTeleportDash = !isTeleportDash;
+<<<<<<< HEAD
+=======
+        System.out.println("Modo dash alterado para: " + (isTeleportDash ? "TELEPORTE" : "DASH NORMAL"));
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void updateDashTrails() {
@@ -666,6 +705,7 @@ public class Player extends PlayerEntity {
         g2d.setColor(energyColor);
         g2d.fillRect(x + 7, drawY - 7, (energyLevel * 18) / 100, 1);
 
+<<<<<<< HEAD
         // Indicador de dash disponível (removido)
         // if (canDash && energyLevel >= DASH_ENERGY_COST) {
         //     g2d.setColor(new Color(255, 255, 0, 150));
@@ -673,6 +713,15 @@ public class Player extends PlayerEntity {
         //     g2d.setColor(Color.WHITE);
         //     g2d.drawString("D", x + width - 6, drawY - 7);
         // }
+=======
+        // Indicador de dash disponível
+        if (canDash && energyLevel >= DASH_ENERGY_COST) {
+            g2d.setColor(new Color(255, 255, 0, 150));
+            g2d.fillOval(x + width - 8, drawY - 12, 6, 6);
+            g2d.setColor(Color.WHITE);
+            g2d.drawString("D", x + width - 6, drawY - 7);
+        }
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     private void drawTeleportEffect(Graphics2D g2d, int drawY) {

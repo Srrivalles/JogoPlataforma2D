@@ -41,6 +41,7 @@ public class AnimationManager {
      * Inicializa sprites padrão (placeholders)
      */
     private void initializeDefaultSprites() {
+<<<<<<< HEAD
         // Player sprites - usando os novos sprites individuais
         registerSpriteSheet("player_idle", "sprites/player/Computer Dude Idle.png", 32, 48);
         registerSpriteSheet("player_walk", "sprites/player/Computer Dude Run.png", 32, 48);
@@ -51,6 +52,14 @@ public class AnimationManager {
         registerAnimation("player_walk", "player_walk", 0, 0, 12.0f, true);
         registerAnimation("player_jump", "player_jump", 0, 0, 10.0f, false);
         registerAnimation("player_dash", "player_idle", 0, 0, 15.0f, false); // Usa idle como dash por enquanto
+=======
+        // Player sprites
+        registerSpriteSheet("sprites/player", "sprites/player/player_sheet.png", 32, 48);
+        registerAnimation("player_idle", "sprites/player", 0, 3, 8.0f, true);
+        registerAnimation("player_walk", "sprites/player", 4, 7, 12.0f, true);
+        registerAnimation("player_jump", "sprites/player", 8, 10, 10.0f, false);
+        registerAnimation("player_dash", "sprites/player", 11, 13, 15.0f, false);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         
         // Enemy sprites
         registerSpriteSheet("enemy", "sprites/enemies/enemy_sheet.png", 30, 40);

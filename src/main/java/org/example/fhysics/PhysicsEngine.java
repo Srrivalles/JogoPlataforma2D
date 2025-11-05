@@ -65,11 +65,19 @@ public class PhysicsEngine {
             player.y = platform.y - player.height;
             player.velocityY = 0;
             player.isOnGround = true;
+<<<<<<< HEAD
+=======
+            System.out.println("Player aterrissou na plataforma em Y=" + player.y);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
         // Colisão vindo de baixo (batendo a cabeça)
         else if (player.velocityY < 0 && previousY >= platform.y + platform.height - 5) {
             player.y = platform.y + platform.height;
             player.velocityY = 0;
+<<<<<<< HEAD
+=======
+            System.out.println("Player bateu a cabeça na plataforma");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
         // Se não conseguiu resolver, colocar em posição segura
         else {
@@ -175,6 +183,10 @@ public class PhysicsEngine {
                 enemy.getHitbox().setLocation((int)enemy.x, (int)enemy.y);
             }
         } catch (Exception e) {
+<<<<<<< HEAD
+=======
+            System.out.println("Erro ao atualizar hitbox do enemy: " + e.getMessage());
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         }
     }
 }

@@ -434,6 +434,7 @@ public class EnergyOrb {
     public void onCollect(Player player) {
         collected = true;
 
+<<<<<<< HEAD
         // Tocar som de efeito ao coletar (com base no tipo)
         try {
             switch (orbType) {
@@ -451,6 +452,8 @@ public class EnergyOrb {
             e.printStackTrace();
         }
 
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         // Restaurar energia do player
         player.energyLevel = Math.min(100, player.energyLevel + energyValue);
 

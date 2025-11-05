@@ -4,6 +4,7 @@ import org.example.ui.GameConfig;
 import org.example.ui.MenuSystem;
 import org.example.objects.Enemy;
 import org.example.objects.EnergyOrb;
+<<<<<<< HEAD
 import org.example.objects.Player;
 
 import java.util.ArrayList;
@@ -12,10 +13,15 @@ import java.util.List;
 public class ScoreSystem {
 
     // === Variáveis principais ===
+=======
+
+public class ScoreSystem {
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     private int currentScore = 0;
     private int energyOrbsCollected = 0;
     private int enemiesDefeated = 0;
     private int scoreMultiplier = 1;
+<<<<<<< HEAD
     private int highScore = 0;
 
     // === Sistema de combo ===
@@ -331,10 +337,64 @@ public class ScoreSystem {
             System.out.println("🏆 NOVO HIGH SCORE! " + highScore);
         }
 
+=======
+
+    // Constante para o multiplicador máximo (você pode mover para GameConfig se preferir)
+    private static final int MAX_SCORE_MULTIPLIER = 5;
+
+    // ⭐ MÉTODOS ADICIONADOS PARA COMPATIBILIDADE
+    public void addScore(int points) {
+        this.currentScore += points;
+        System.out.println("Pontos adicionados: " + points + " | Total: " + this.currentScore);
+    }
+
+    public void addPoints(int points) {
+        addScore(points); // Alias para compatibilidade
+    }
+
+    public void collectOrb(EnergyOrb orb) {
+        energyOrbsCollected++;
+        int orbScore = calculateOrbScore(orb);
+        currentScore += orbScore;
+        showScoreEffect(orbScore, orb.x, orb.y);
+    }
+
+    public void defeatEnemy(Enemy enemy) {
+        enemiesDefeated++;
+        int enemyScore = GameConfig.ENEMY_DEFEAT_POINTS * scoreMultiplier;
+        currentScore += enemyScore;
+        scoreMultiplier = Math.min  (MAX_SCORE_MULTIPLIER, scoreMultiplier + 1);
+        showScoreEffect(enemyScore, enemy.x, enemy.y);
+    }
+
+    private int calculateOrbScore(EnergyOrb orb) {
+        int baseScore = GameConfig.ORB_POINTS;
+
+        // Bonus por distância (quanto mais longe do início, mais pontos)
+        int distanceBonus = orb.x / 200;
+
+        // Bonus por altura (orbs mais altos são mais difíceis de pegar)
+        int heightBonus = Math.max(0, (500 - orb.y) / 50);
+
+        int totalScore = baseScore + distanceBonus + heightBonus;
+
+        // Limitar entre 25 e 500 pontos base
+        totalScore = Math.max(25, Math.min(500, totalScore));
+
+        return totalScore * scoreMultiplier;
+    }
+
+    public void showScoreEffect(int score, double x, double y) {
+        System.out.println("+" + score + " pontos em [" + x + ", " + y + "]!");
+    }
+
+    public void resetScore() {
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         currentScore = 0;
         energyOrbsCollected = 0;
         enemiesDefeated = 0;
         scoreMultiplier = 1;
+<<<<<<< HEAD
         comboCounter = 0;
         consecutiveCollects = 0;
         perfectLandings = 0;
@@ -349,12 +409,15 @@ public class ScoreSystem {
         activeBonuses.clear();
         performanceScore = 0;
         currentRank = "D";
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
 
     public void resetMultiplier() {
         scoreMultiplier = 1;
     }
 
+<<<<<<< HEAD
     // === Getters ===
     public int getCurrentScore() { return currentScore; }
     public int getHighScore() { return highScore; }
@@ -378,11 +441,21 @@ public class ScoreSystem {
     }
 
     // === Métodos de atualização do UI ===
+=======
+    // Getters
+    public int getCurrentScore() { return currentScore; }
+    public int getEnergyOrbsCollected() { return energyOrbsCollected; }
+    public int getEnemiesDefeated() { return enemiesDefeated; }
+    public int getScoreMultiplier() { return scoreMultiplier; }
+
+    // Método para atualizar o menu system
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void updateMenuSystem(MenuSystem menuSystem) {
         if (menuSystem != null) {
             try {
                 menuSystem.updateScore(currentScore);
                 menuSystem.updateStats(energyOrbsCollected, enemiesDefeated);
+<<<<<<< HEAD
 
                 // Tentar atualizar informações adicionais se disponível
                 if (hasMethod(menuSystem, "updateCombo")) {
@@ -404,11 +477,16 @@ public class ScoreSystem {
                 }
             } catch (Exception e) {
                 // Falha silenciosa para compatibilidade
+=======
+            } catch (Exception e) {
+                System.out.println("Aviso: MenuSystem não possui métodos esperados");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             }
         }
     }
 
     public void triggerGameOver(MenuSystem menuSystem) {
+<<<<<<< HEAD
         System.out.println("════════════════════════════════════════");
         System.out.println("           GAME OVER");
         System.out.println("════════════════════════════════════════");
@@ -426,17 +504,25 @@ public class ScoreSystem {
         System.out.println("  • Double Kills: " + doubleKills);
         System.out.println("  • Triple Kills: " + tripleKills);
         System.out.println("════════════════════════════════════════");
+=======
+        System.out.println("Game Over! Score final: " + currentScore);
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
         if (menuSystem != null) {
             try {
                 menuSystem.triggerGameOver(currentScore, energyOrbsCollected, enemiesDefeated);
             } catch (Exception e) {
+<<<<<<< HEAD
                 System.err.println("Erro ao chamar triggerGameOver no MenuSystem");
+=======
+                System.out.println("Erro ao chamar triggerGameOver no MenuSystem");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             }
         }
 
         resetMultiplier();
     }
+<<<<<<< HEAD
 
     // === Métodos auxiliares ===
     private boolean hasMethod(Object obj, String methodName) {
@@ -589,4 +675,6 @@ public class ScoreSystem {
             return System.currentTimeMillis() < endTime;
         }
     }
+=======
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 }

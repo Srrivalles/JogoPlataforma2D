@@ -186,10 +186,18 @@ public class PlayerEntity extends Entity {
         // Callback de dano
         health.setOnDamage((entity, healthComp, damage) -> {
             // Efeito visual de dano já é gerenciado pelo HealthComponent
+<<<<<<< HEAD
+=======
+            System.out.println("Player tomou " + damage + " de dano!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         });
         
         // Callback de morte
         health.setOnDeath((entity, healthComp, value) -> {
+<<<<<<< HEAD
+=======
+            System.out.println("Player morreu!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             // Lógica de game over será gerenciada pelo GamePanel
         });
     }
@@ -292,6 +300,10 @@ public class PlayerEntity extends Entity {
         if (movement.getVelocityY() > 0 && y + height - 15 < enemy.y) {
             // Eliminar inimigo
             movement.applyImpulse(0, -jumpStrength);
+<<<<<<< HEAD
+=======
+            // Adicionar pontos (será gerenciado pelo ScoreSystem)
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
         } else if (movement.getVelocityY() <= 0) {
             // Player tocou inimigo lateralmente ou por baixo - perder vida
             // O HealthComponent já verifica invencibilidade internamente
@@ -309,6 +321,10 @@ public class PlayerEntity extends Entity {
     
     private void handleOrbCollision(Entity orb) {
         // Coletar orb (lógica será gerenciada pelo ScoreSystem)
+<<<<<<< HEAD
+=======
+        System.out.println("Orb coletada!");
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     }
     
     // Métodos de controle do player
@@ -329,13 +345,18 @@ public class PlayerEntity extends Entity {
             movement.applyImpulse(0, -jumpStrength);
         }
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void dash() {
         if (canDash && currentEnergy >= dashEnergyCost && !isDashing) {
             isDashing = true;
             canDash = false;
             currentEnergy -= dashEnergyCost;
             dashCooldown = DASH_COOLDOWN_TIME;
+<<<<<<< HEAD
 
             // ✅ SOM DO DASH
             org.example.audio.AudioManager.playDashSound();
@@ -348,12 +369,27 @@ public class PlayerEntity extends Entity {
             showTeleportEffect = true;
             teleportEffectTimer = DASH_DURATION;
 
+=======
+            
+            // Aplicar impulso de dash
+            float dashDirection = movement.isFacingRight() ? 1 : -1;
+            movement.applyImpulse(dashSpeed * dashDirection, 0);
+            
+            // Efeito visual
+            showTeleportEffect = true;
+            teleportEffectTimer = DASH_DURATION;
+            
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
             // Adicionar trail de dash
             dashTrails.add(new DashTrail(x, y, movement.isFacingRight()));
         }
     }
+<<<<<<< HEAD
 
 
+=======
+    
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public void stopMoving() {
         movement.stopHorizontal();
     }

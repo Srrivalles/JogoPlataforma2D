@@ -9,12 +9,20 @@ public class GameConfig {
     public static final int SCREEN_HEIGHT = 720;
     public static final int TILE_SIZE = 32;
 
+<<<<<<< HEAD
     // === CONFIGURACOES DE FISICA ===
+=======
+    // === CONFIGURAÇÕES DE FÍSICA ===
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public static final double GRAVITY = 0.5;
     public static final double TERMINAL_VELOCITY = 15.0;
     public static final double FRICTION = 0.8;
 
+<<<<<<< HEAD
     // === CONFIGURACOES DO PLAYER ===
+=======
+    // === CONFIGURAÇÕES DO PLAYER ===
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public static final double PLAYER_SPEED = 5.0;
     public static final double PLAYER_JUMP_STRENGTH = 12.0;
     public static final double PLAYER_DASH_SPEED = 15.0;
@@ -28,7 +36,11 @@ public class GameConfig {
     public static final Color ACCENT_COLOR = new Color(255, 255, 0);     // Yellow
 
     // === CONFIGURAÇÕES DE MUNDO ===
+<<<<<<< HEAD
     public static final int WORLD_WIDTH = Integer.MAX_VALUE; // MUNDO INFINITO - SEM LIMITES!
+=======
+    public static final int WORLD_WIDTH = 5000;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public static final int WORLD_HEIGHT = 2000;
     public static final int GROUND_LEVEL = 600;
 
@@ -36,7 +48,11 @@ public class GameConfig {
     public static final double CAMERA_SMOOTHING = 0.1;
     public static final int CAMERA_OFFSET_Y = 200;
     public static final int CAMERA_BOUNDARY_LEFT = 100;
+<<<<<<< HEAD
     public static final int CAMERA_BOUNDARY_RIGHT = Integer.MAX_VALUE - SCREEN_WIDTH - 100; // SEM LIMITE À DIREITA!
+=======
+    public static final int CAMERA_BOUNDARY_RIGHT = WORLD_WIDTH - SCREEN_WIDTH - 100;
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
 
     // === CONFIGURAÇÕES DE INIMIGOS ===
     public static final double ENEMY_SPEED = 2.0;
@@ -64,12 +80,20 @@ public class GameConfig {
     public static final int TARGET_FPS = 60;
     public static final double NANOSECONDS_PER_FRAME = 1000000000.0 / TARGET_FPS;
 
+<<<<<<< HEAD
     // === CONFIGURACOES DE HUD ===
+=======
+    // === CONFIGURAÇÕES DE HUD ===
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public static final Color HUD_BACKGROUND = new Color(0, 0, 0, 150);
     public static final Color HUD_TEXT_COLOR = Color.WHITE;
     public static final Color HUD_ACCENT_COLOR = new Color(0, 255, 255);
 
+<<<<<<< HEAD
     // === CONFIGURACOES DE ANIMACAO E SPRITES ===
+=======
+    // === CONFIGURAÇÕES DE ANIMAÇÃO E SPRITES ===
+>>>>>>> 5909f9628214d32c37618f5fb01e5d573c4da176
     public static final boolean ANIMATIONS_ENABLED = false;
     public static final float ANIMATION_SPEED_MULTIPLIER = 1.0f;
     public static final int SPRITE_SCALE = 1; // Multiplicador de escala para sprites
